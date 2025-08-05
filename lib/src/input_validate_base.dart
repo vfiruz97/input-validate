@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer' as dev;
 
+import 'package:input_validate/src/rules/special_rules.dart';
+
 import 'exceptions/validation_exception.dart';
 import 'field_path.dart';
 import 'rules/validation_rule.dart';
@@ -14,8 +16,7 @@ class InputValidate {
   InputValidate._();
 
   // Cache for parsed field paths to improve performance
-  static final Map<String, List<FieldPath>> _pathCache =
-      <String, List<FieldPath>>{};
+  static final Map<String, List<FieldPath>> _pathCache = <String, List<FieldPath>>{};
 
   /// Gets parsed field path segments from cache or parses and caches them.
   static List<FieldPath> _getCachedFieldPath(String path) {
@@ -23,11 +24,10 @@ class InputValidate {
   }
 
   /// Checks if validation failures include a RequiredRule failure.
-  static bool _hasRequiredRuleFailure(
-      List<ValidationRule> rules, List<String> errors) {
+  static bool _hasRequiredRuleFailure(List<ValidationRule> rules, List<String> errors) {
     // Check if any rule is a RequiredRule and has the RequiredRule error message
     for (final rule in rules) {
-      if (rule.runtimeType.toString() == 'RequiredRule') {
+      if (rule is RequiredRule) {
         for (final error in errors) {
           if (error.contains('required') || error == rule.message) {
             return true;
@@ -65,8 +65,7 @@ class InputValidate {
     bool enableParallelValidation = true,
   }) async {
     dev.log('Starting validation with ${rules.length} rule sets');
-    dev.log(
-        'Input data has ${input.keys.length} fields: ${input.keys.join(', ')}');
+    dev.log('Input data has ${input.keys.length} fields: ${input.keys.join(', ')}');
     dev.log('Parallel validation: $enableParallelValidation');
 
     final errors = <String, List<String>>{};
@@ -74,8 +73,7 @@ class InputValidate {
 
     // Expand wildcard rules to concrete paths
     final expandedRules = _expandWildcardPaths(rules, input);
-    dev.log(
-        'Expanded rules from ${rules.length} to ${expandedRules.length} concrete paths');
+    dev.log('Expanded rules from ${rules.length} to ${expandedRules.length} concrete paths');
 
     // Track array paths that should be included even if empty
     final arrayPaths = <String>{};
@@ -94,8 +92,7 @@ class InputValidate {
         dev.log('Validating field: $fieldPath with ${fieldRules.length} rules');
 
         try {
-          final fieldErrors =
-              await _validateField(fieldPath, input, fieldRules);
+          final fieldErrors = await _validateField(fieldPath, input, fieldRules);
           if (fieldErrors == null) {
             dev.log('Field $fieldPath passed all validations');
           }
@@ -116,8 +113,7 @@ class InputValidate {
           dev.log('Field $fieldPath validated successfully');
         } else {
           errors[fieldPath] = fieldErrors;
-          dev.log(
-              'Field $fieldPath failed with errors: ${fieldErrors.join(', ')}');
+          dev.log('Field $fieldPath failed with errors: ${fieldErrors.join(', ')}');
         }
       }
     } else {
@@ -130,19 +126,16 @@ class InputValidate {
         dev.log('Validating field: $fieldPath with ${fieldRules.length} rules');
 
         try {
-          final fieldErrors =
-              await _validateField(fieldPath, input, fieldRules);
+          final fieldErrors = await _validateField(fieldPath, input, fieldRules);
           if (fieldErrors == null) {
             validatedPaths.add(fieldPath);
             dev.log('Field $fieldPath validated successfully');
           } else {
             errors[fieldPath] = fieldErrors;
-            dev.log(
-                'Field $fieldPath failed with errors: ${fieldErrors.join(', ')}');
+            dev.log('Field $fieldPath failed with errors: ${fieldErrors.join(', ')}');
             // Early termination for critical validation failures
             if (_hasRequiredRuleFailure(fieldRules, fieldErrors)) {
-              dev.log(
-                  'Early termination due to RequiredRule failure on $fieldPath');
+              dev.log('Early termination due to RequiredRule failure on $fieldPath');
               break;
             }
           }
@@ -165,12 +158,10 @@ class InputValidate {
       throw MultipleValidationException.fromErrors(errors);
     }
 
-    dev.log(
-        'Validation completed successfully for ${validatedPaths.length} paths');
+    dev.log('Validation completed successfully for ${validatedPaths.length} paths');
     // Extract and return only validated data
     final result = _extractValidatedData(input, validatedPaths);
-    dev.log(
-        'Returning validated data with ${result.keys.length} top-level fields');
+    dev.log('Returning validated data with ${result.keys.length} top-level fields');
     return result;
   }
 
@@ -208,8 +199,7 @@ class InputValidate {
       if (currentData is List) {
         for (int i = 0; i < currentData.length; i++) {
           final newPath = '$currentPath.$i';
-          _findArrayPaths(
-              remainingSegments, currentData[i], newPath, arrayPaths);
+          _findArrayPaths(remainingSegments, currentData[i], newPath, arrayPaths);
         }
       }
     } else {
@@ -234,8 +224,7 @@ class InputValidate {
     final value = _getValueAtPath(input, fieldPath);
     final fieldErrors = <String>[];
 
-    dev.log(
-        'Validating field $fieldPath (value: $value, type: ${value.runtimeType})');
+    dev.log('Validating field $fieldPath (value: $value, type: ${value.runtimeType})');
 
     for (final rule in rules) {
       try {
@@ -255,8 +244,7 @@ class InputValidate {
     if (fieldErrors.isEmpty) {
       dev.log('All rules passed for field $fieldPath');
     } else {
-      dev.log(
-          'Field $fieldPath validation failed with ${fieldErrors.length} errors');
+      dev.log('Field $fieldPath validation failed with ${fieldErrors.length} errors');
     }
 
     return fieldErrors.isEmpty ? null : fieldErrors;
@@ -293,10 +281,8 @@ class InputValidate {
     final result = <String, dynamic>{};
 
     // Filter out array paths - they will be included when their elements are processed
-    final fieldPaths =
-        validatedPaths.where((path) => !_isArrayPath(path, input)).toSet();
-    final arrayPaths =
-        validatedPaths.where((path) => _isArrayPath(path, input)).toSet();
+    final fieldPaths = validatedPaths.where((path) => !_isArrayPath(path, input)).toSet();
+    final arrayPaths = validatedPaths.where((path) => _isArrayPath(path, input)).toSet();
 
     // Process regular field paths
     for (final path in fieldPaths) {
@@ -338,8 +324,7 @@ class InputValidate {
       if (current is Map<String, dynamic>) {
         // Check if next segment is a numeric index (indicating we need an array)
         final nextSegment = i + 1 < segments.length ? segments[i + 1] : null;
-        final needsArray =
-            nextSegment != null && int.tryParse(nextSegment) != null;
+        final needsArray = nextSegment != null && int.tryParse(nextSegment) != null;
 
         if (needsArray) {
           current[segment] ??= <dynamic>[];
@@ -392,8 +377,7 @@ class InputValidate {
       // Parse the path to identify wildcard positions
       final pathSegments = _getCachedFieldPath(rulePath);
       final expandedPaths = _generateConcretePaths(pathSegments, input, '');
-      dev.log(
-          'Wildcard path $rulePath expanded to ${expandedPaths.length} concrete paths');
+      dev.log('Wildcard path $rulePath expanded to ${expandedPaths.length} concrete paths');
 
       // Add all expanded paths with the same rules
       for (final concretePath in expandedPaths) {
@@ -413,9 +397,7 @@ class InputValidate {
     String currentPath,
   ) {
     if (pathSegments.isEmpty) {
-      return [
-        currentPath.isEmpty ? '' : currentPath.substring(1)
-      ]; // Remove leading dot
+      return [currentPath.isEmpty ? '' : currentPath.substring(1)]; // Remove leading dot
     }
 
     final segment = pathSegments.first;

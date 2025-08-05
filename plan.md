@@ -102,6 +102,55 @@ The project is now feature-complete with:
 - ✅ **Documentation Refinements**: Minor improvements to README.md formatting and clarity
 - ✅ **Codebase Consistency**: Improved code formatting in core validation engine for better maintainability
 
+### 📋 Phase 7 - NullableRule Enhancement (PENDING)
+
+**Task:** Fix NullableRule Implementation to Properly Handle Null Values
+
+**Background:** The current `NullableRule` implementation doesn't follow the intended behavior. It should be a special rule that allows null values and skips further validation when the value is null.
+
+**Required Changes:**
+
+1. **Update NullableRule Behavior**
+
+   - [ ] Modify `NullableRule` to be a special rule that takes no parameters
+   - [ ] The rule should always pass validation (return true)
+   - [ ] Update rule message to reflect its purpose
+
+2. **Enhance InputValidate Validation Logic**
+
+   - [ ] Add special handling for `NullableRule` in the validation flow
+   - [ ] When a field value is null AND contains `NullableRule`, skip all other rule validations
+   - [ ] When a field value is not null, continue with normal validation of all rules
+   - [ ] Ensure this works with wildcard paths and nested validations
+
+3. **Update Tests**
+
+   - [ ] Add comprehensive tests for null value handling with `NullableRule`
+   - [ ] Test that other rules are skipped when value is null and `NullableRule` is present
+   - [ ] Test that other rules are still applied when value is not null
+   - [ ] Test edge cases with nested paths and wildcards
+
+4. **Update Documentation**
+   - [ ] Update README.md with correct `NullableRule` usage examples
+   - [ ] Add documentation comments explaining the special behavior
+   - [ ] Update example files to demonstrate proper usage
+
+**Example Behavior:**
+
+```dart
+'user.surname': [
+  NullableRule(),     // Allow null values
+  IsStringRule(),     // Only applied if value is not null
+  MinRule(3),         // Only applied if value is not null
+  MaxRule(20),        // Only applied if value is not null
+]
+
+// If user.surname is null -> validation passes (other rules skipped)
+// If user.surname is "John" -> all rules are applied
+```
+
+**Priority:** High - This fixes incorrect behavior in the validation system
+
 ## 1. Project Structure Setup
 
 ### Subtasks:
