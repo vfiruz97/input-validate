@@ -162,6 +162,7 @@ The project is now feature-complete with:
 **Implemented Changes:**
 
 1. **Example File Improvements**
+
    - [x] Updated `example/main.dart` to use proper rule names (`IsStringRule`, `IsNumberRule`, etc.)
    - [x] Replaced `dart:developer` log calls with `print()` statements for better console output
    - [x] Removed unused imports for cleaner code
@@ -169,12 +170,14 @@ The project is now feature-complete with:
    - [x] Added comprehensive error handling and formatting
 
 2. **Validation Rule Consistency**
+
    - [x] Fixed null handling across all validation rules to return `true` when value is `null`
    - [x] Updated `NullableRule` to properly handle empty Lists and Maps
    - [x] Enhanced async/await handling in validation engine for better `FutureOr` support
    - [x] Improved error aggregation and reporting consistency
 
 3. **Test Suite Updates**
+
    - [x] Updated all test files to use new rule names (`IsStringRule`, `IsNumberRule`, etc.)
    - [x] Maintained backward compatibility tests
    - [x] Enhanced test coverage for null value handling
