@@ -218,10 +218,10 @@ void main() {
             }));
       });
 
-      test('should skip wildcard paths for now', () async {
+      test('should validate array fields with wildcard paths', () async {
         final rules = {
           'name': [RequiredRule(), StringRule()],
-          'users.*.name': [RequiredRule(), StringRule()], // Should be skipped
+          'users.*.name': [RequiredRule(), StringRule()],
         };
 
         final input = {
@@ -234,11 +234,216 @@ void main() {
 
         final result = await InputValidate.validate(input, rules);
 
-        // Only 'name' should be validated, wildcard path should be skipped
+        // Wildcard paths are now fully supported
         expect(
             result,
             equals({
               'name': 'John',
+              'users': [
+                {'name': 'Alice'},
+                {'name': 'Bob'},
+              ],
+            }));
+      });
+
+      test('should validate array fields with wildcards', () async {
+        final rules = {
+          'users.*.name': [RequiredRule(), StringRule()],
+          'users.*.email': [RequiredRule(), EmailRule()],
+          'users.*.age': [RequiredRule(), NumberRule()],
+        };
+
+        final input = {
+          'users': [
+            {
+              'name': 'Alice',
+              'email': 'alice@example.com',
+              'age': 25,
+              'secret': 'hidden',
+            },
+            {
+              'name': 'Bob',
+              'email': 'bob@example.com',
+              'age': 30,
+              'password': 'secret',
+            },
+          ],
+          'extra': 'data',
+        };
+
+        final result = await InputValidate.validate(input, rules);
+
+        expect(
+            result,
+            equals({
+              'users': [
+                {
+                  'name': 'Alice',
+                  'email': 'alice@example.com',
+                  'age': 25,
+                },
+                {
+                  'name': 'Bob',
+                  'email': 'bob@example.com',
+                  'age': 30,
+                },
+              ],
+            }));
+      });
+
+      test('should handle validation errors in array fields', () async {
+        final rules = {
+          'users.*.name': [RequiredRule(), StringRule()],
+          'users.*.email': [RequiredRule(), EmailRule()],
+        };
+
+        final input = {
+          'users': [
+            {
+              'name': 'Alice',
+              'email': 'alice@example.com',
+            },
+            {
+              'name': '',
+              'email': 'invalid-email',
+            },
+          ],
+        };
+
+        try {
+          await InputValidate.validate(input, rules);
+          fail('Expected validation exception');
+        } catch (e) {
+          expect(e, isA<MultipleValidationException>());
+          final exception = e as MultipleValidationException;
+
+          expect(exception.inputErrors!['users.1.name'], isNotNull);
+          expect(exception.inputErrors!['users.1.email'], isNotNull);
+          expect(exception.inputErrors!['users.1.name']!.first, contains('required'));
+          expect(exception.inputErrors!['users.1.email']!.first, contains('valid email'));
+        }
+      });
+
+      test('should handle empty arrays with wildcards', () async {
+        final rules = {
+          'users.*.name': [RequiredRule(), StringRule()],
+        };
+
+        final input = {
+          'users': <dynamic>[],
+        };
+
+        final result = await InputValidate.validate(input, rules);
+
+        expect(
+            result,
+            equals({
+              'users': [],
+            }));
+      });
+
+      test('should handle missing arrays with wildcards', () async {
+        final rules = {
+          'users.*.name': [RequiredRule(), StringRule()],
+        };
+
+        final input = <String, dynamic>{};
+
+        final result = await InputValidate.validate(input, rules);
+
+        // No validation should occur for missing arrays
+        expect(result, equals({}));
+      });
+
+      test('should handle nested wildcards', () async {
+        final rules = {
+          'groups.*.users.*.name': [RequiredRule(), StringRule()],
+        };
+
+        final input = {
+          'groups': [
+            {
+              'users': [
+                {'name': 'Alice'},
+                {'name': 'Bob'},
+              ],
+            },
+            {
+              'users': [
+                {'name': 'Charlie'},
+              ],
+            },
+          ],
+        };
+
+        final result = await InputValidate.validate(input, rules);
+
+        expect(
+            result,
+            equals({
+              'groups': [
+                {
+                  'users': [
+                    {'name': 'Alice'},
+                    {'name': 'Bob'},
+                  ],
+                },
+                {
+                  'users': [
+                    {'name': 'Charlie'},
+                  ],
+                },
+              ],
+            }));
+      });
+
+      test('should handle mixed wildcard and non-wildcard paths', () async {
+        final rules = {
+          'title': [RequiredRule(), StringRule()],
+          'users.*.name': [RequiredRule(), StringRule()],
+          'users.*.profile.bio': [NullableRule(StringRule())],
+          'metadata.version': [RequiredRule(), NumberRule()],
+        };
+
+        final input = {
+          'title': 'User List',
+          'users': [
+            {
+              'name': 'Alice',
+              'profile': {'bio': 'Software developer'},
+              'extra': 'data',
+            },
+            {
+              'name': 'Bob',
+              'profile': {'bio': null},
+            },
+          ],
+          'metadata': {
+            'version': 1,
+            'created': '2023-01-01',
+          },
+          'extra': 'ignored',
+        };
+
+        final result = await InputValidate.validate(input, rules);
+
+        expect(
+            result,
+            equals({
+              'title': 'User List',
+              'users': [
+                {
+                  'name': 'Alice',
+                  'profile': {'bio': 'Software developer'},
+                },
+                {
+                  'name': 'Bob',
+                  'profile': {'bio': null},
+                },
+              ],
+              'metadata': {
+                'version': 1,
+              },
             }));
       });
 
