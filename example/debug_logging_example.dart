@@ -70,7 +70,7 @@ Future<void> main() async {
 
     final input = {
       'name': 123, // Invalid: should be string
-      'age': 18,   // Invalid: under minimum age
+      'age': 18, // Invalid: under minimum age
       'email': 'invalid-email', // Invalid: bad format
     };
 
@@ -92,11 +92,7 @@ Future<void> main() async {
     final input = <String, dynamic>{}; // Empty input to trigger failures
 
     // This will fail with sequential validation and early termination
-    await InputValidate.validate(
-      input, 
-      rules, 
-      enableParallelValidation: false
-    );
+    await InputValidate.validate(input, rules, enableParallelValidation: false);
   } catch (e) {
     print('❌ Sequential validation failed as expected: ${e.toString().split('\n').first}\n');
   }

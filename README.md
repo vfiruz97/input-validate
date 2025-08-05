@@ -191,7 +191,7 @@ In development, you can view debug logs by:
 
 - Validation start/completion with timing information
 - Input data summary and rule expansion details
-- Individual field validation with value types and rule results  
+- Individual field validation with value types and rule results
 - Wildcard path expansion process
 - Error details and validation failures
 - Performance metrics for parallel vs sequential validation
@@ -202,6 +202,7 @@ dart run example/debug_logging_example.dart
 ```
 
 The logging provides insights into:
+
 - Which rules pass/fail for each field
 - How wildcard paths expand to concrete paths
 - Performance differences between validation modes
