@@ -181,32 +181,7 @@ The package includes comprehensive debug logging to help you understand the vali
 
 ### Viewing Debug Logs
 
-In development, you can view debug logs by:
-
-1. **In VS Code/IDE**: Check the Debug Console when running your application
-2. **In Flutter**: Use `flutter logs` in a separate terminal
-3. **In Dart**: Use `dart --observe run your_file.dart` and check the observatory
-
-### What Gets Logged
-
-- Validation start/completion with timing information
-- Input data summary and rule expansion details
-- Individual field validation with value types and rule results
-- Wildcard path expansion process
-- Error details and validation failures
-- Performance metrics for parallel vs sequential validation
-
-```dart
-// Run the debug logging example to see it in action
-dart run example/debug_logging_example.dart
-```
-
-The logging provides insights into:
-
-- Which rules pass/fail for each field
-- How wildcard paths expand to concrete paths
-- Performance differences between validation modes
-- Detailed error information for troubleshooting
+In development, you can view debug logs.
 
 ## Error Handling
 
@@ -257,10 +232,6 @@ final rules = {
 };
 ```
 
-## Advanced Examples
-
-For comprehensive examples including nested wildcards, performance comparisons, and custom rules, see the [example file](example/input_validate_example.dart).
-
 ## Key Benefits
 
 🎯 **Data Security** - Only validated fields are returned, preventing data leaks  
@@ -280,30 +251,10 @@ For comprehensive examples including nested wildcards, performance comparisons, 
 | `array.*.object.field`   | Array of objects | `users.*.profile.age`         |
 | `array.*.nested.*.field` | Deeply nested    | `groups.*.users.*.email`      |
 
-## Migration from Other Validators
-
-### From Laravel Validation
-
-```php
-// Laravel PHP
-$rules = [
-    'name' => 'required|string',
-    'users.*.email' => 'required|email',
-];
-```
-
-```dart
-// Input Validate Dart
-final rules = {
-  'name': [RequiredRule(), IsStringRule()],
-  'users.*.email': [RequiredRule(), EmailRule()],
-};
-```
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
