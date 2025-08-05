@@ -2,8 +2,8 @@ import 'package:input_validate/input_validate.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('StringRule', () {
-    const rule = StringRule();
+  group('IsStringRule', () {
+    const rule = IsStringRule();
 
     test('should pass for string values', () async {
       expect(await rule.passes('hello'), isTrue);
@@ -24,8 +24,8 @@ void main() {
     });
   });
 
-  group('NumberRule', () {
-    const rule = NumberRule();
+  group('IsNumberRule', () {
+    const rule = IsNumberRule();
 
     test('should pass for int values', () async {
       expect(await rule.passes(42), isTrue);
@@ -52,8 +52,8 @@ void main() {
     });
   });
 
-  group('BooleanRule', () {
-    const rule = BooleanRule();
+  group('IsBooleanRule', () {
+    const rule = IsBooleanRule();
 
     test('should pass for boolean values', () async {
       expect(await rule.passes(true), isTrue);
@@ -75,7 +75,7 @@ void main() {
   });
 
   group('ListRule', () {
-    const rule = ListRule();
+    const rule = IsListRule();
 
     test('should pass for list values', () async {
       expect(await rule.passes([]), isTrue);
@@ -97,7 +97,7 @@ void main() {
   });
 
   group('MapRule', () {
-    const rule = MapRule();
+    const rule = IsMapRule();
 
     test('should pass for map values', () async {
       expect(await rule.passes({}), isTrue);

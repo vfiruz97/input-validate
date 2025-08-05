@@ -11,6 +11,7 @@ class IsStringRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
+    if (value == null) return true;
     return value is String;
   }
 }
@@ -24,6 +25,7 @@ class IsNumberRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
+    if (value == null) return true;
     return value is num;
   }
 }
@@ -37,6 +39,7 @@ class IsBooleanRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
+    if (value == null) return true;
     return value is bool;
   }
 }
@@ -50,6 +53,7 @@ class IsListRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
+    if (value == null) return true;
     return value is List;
   }
 }
@@ -63,22 +67,7 @@ class IsMapRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
+    if (value == null) return true;
     return value is Map;
   }
 }
-
-// Backward compatibility - deprecated aliases
-/// @deprecated Use IsStringRule instead. Will be removed in a future version.
-typedef StringRule = IsStringRule;
-
-/// @deprecated Use IsNumberRule instead. Will be removed in a future version.
-typedef NumberRule = IsNumberRule;
-
-/// @deprecated Use IsBooleanRule instead. Will be removed in a future version.
-typedef BooleanRule = IsBooleanRule;
-
-/// @deprecated Use IsListRule instead. Will be removed in a future version.
-typedef ListRule = IsListRule;
-
-/// @deprecated Use IsMapRule instead. Will be removed in a future version.
-typedef MapRule = IsMapRule;

@@ -86,7 +86,7 @@ void main() {
 
       test('should validate nested fields successfully', () async {
         final rules = {
-          'user.name': [RequiredRule(), StringRule()],
+          'user.name': [RequiredRule(), IsStringRule()],
           'user.email': [RequiredRule(), EmailRule()],
         };
 
@@ -114,8 +114,8 @@ void main() {
       test('should throw MultipleValidationException for validation failures',
           () async {
         final rules = {
-          'name': [RequiredRule(), StringRule()],
-          'age': [RequiredRule(), NumberRule()],
+          'name': [RequiredRule(), IsStringRule()],
+          'age': [RequiredRule(), IsNumberRule()],
         };
 
         final input = {
@@ -131,9 +131,9 @@ void main() {
 
       test('should collect all validation errors before throwing', () async {
         final rules = {
-          'name': [RequiredRule(), StringRule()],
+          'name': [RequiredRule(), IsStringRule()],
           'email': [RequiredRule(), EmailRule()],
-          'age': [RequiredRule(), NumberRule()],
+          'age': [RequiredRule(), IsNumberRule()],
         };
 
         final input = {
@@ -158,7 +158,7 @@ void main() {
 
       test('should handle multiple rules per field', () async {
         final rules = {
-          'password': [RequiredRule(), StringRule(), MinRule(8)],
+          'password': [RequiredRule(), IsStringRule(), MinRule(8)],
         };
 
         final input = {
@@ -203,8 +203,8 @@ void main() {
 
       test('should handle nullable rules correctly', () async {
         final rules = {
-          'optional': [NullableRule(), StringRule()],
-          'required': [RequiredRule(), StringRule()],
+          'optional': [NullableRule(), IsStringRule()],
+          'required': [RequiredRule(), IsStringRule()],
         };
 
         final input = {
@@ -224,8 +224,8 @@ void main() {
 
       test('should validate array fields with wildcard paths', () async {
         final rules = {
-          'name': [RequiredRule(), StringRule()],
-          'users.*.name': [RequiredRule(), StringRule()],
+          'name': [RequiredRule(), IsStringRule()],
+          'users.*.name': [RequiredRule(), IsStringRule()],
         };
 
         final input = {
@@ -252,9 +252,9 @@ void main() {
 
       test('should validate array fields with wildcards', () async {
         final rules = {
-          'users.*.name': [RequiredRule(), StringRule()],
+          'users.*.name': [RequiredRule(), IsStringRule()],
           'users.*.email': [RequiredRule(), EmailRule()],
-          'users.*.age': [RequiredRule(), NumberRule()],
+          'users.*.age': [RequiredRule(), IsNumberRule()],
         };
 
         final input = {
@@ -297,7 +297,7 @@ void main() {
 
       test('should handle validation errors in array fields', () async {
         final rules = {
-          'users.*.name': [RequiredRule(), StringRule()],
+          'users.*.name': [RequiredRule(), IsStringRule()],
           'users.*.email': [RequiredRule(), EmailRule()],
         };
 
@@ -332,7 +332,7 @@ void main() {
 
       test('should handle empty arrays with wildcards', () async {
         final rules = {
-          'users.*.name': [RequiredRule(), StringRule()],
+          'users.*.name': [RequiredRule(), IsStringRule()],
         };
 
         final input = {
@@ -350,7 +350,7 @@ void main() {
 
       test('should handle missing arrays with wildcards', () async {
         final rules = {
-          'users.*.name': [RequiredRule(), StringRule()],
+          'users.*.name': [RequiredRule(), IsStringRule()],
         };
 
         final input = <String, dynamic>{};
@@ -363,7 +363,7 @@ void main() {
 
       test('should handle nested wildcards', () async {
         final rules = {
-          'groups.*.users.*.name': [RequiredRule(), StringRule()],
+          'groups.*.users.*.name': [RequiredRule(), IsStringRule()],
         };
 
         final input = {
@@ -405,10 +405,10 @@ void main() {
 
       test('should handle mixed wildcard and non-wildcard paths', () async {
         final rules = {
-          'title': [RequiredRule(), StringRule()],
-          'users.*.name': [RequiredRule(), StringRule()],
-          'users.*.profile.bio': [NullableRule(), StringRule()],
-          'metadata.version': [RequiredRule(), NumberRule()],
+          'title': [RequiredRule(), IsStringRule()],
+          'users.*.name': [RequiredRule(), IsStringRule()],
+          'users.*.profile.bio': [NullableRule(), IsStringRule()],
+          'metadata.version': [RequiredRule(), IsNumberRule()],
         };
 
         final input = {
@@ -455,7 +455,7 @@ void main() {
 
       test('should handle deep nested fields', () async {
         final rules = {
-          'level1.level2.level3.value': [RequiredRule(), StringRule()],
+          'level1.level2.level3.value': [RequiredRule(), IsStringRule()],
         };
 
         final input = {
@@ -518,8 +518,8 @@ void main() {
 
       test('should handle constraint rules correctly', () async {
         final rules = {
-          'username': [RequiredRule(), StringRule(), MinRule(3), MaxRule(20)],
-          'score': [RequiredRule(), NumberRule(), MinRule(0), MaxRule(100)],
+          'username': [RequiredRule(), IsStringRule(), MinRule(3), MaxRule(20)],
+          'score': [RequiredRule(), IsNumberRule(), MinRule(0), MaxRule(100)],
           'category': [
             RequiredRule(),
             InRule({'A', 'B', 'C'})
@@ -545,8 +545,8 @@ void main() {
 
       test('should work with parallel validation enabled (default)', () async {
         final rules = {
-          'name': [RequiredRule(), StringRule()],
-          'age': [RequiredRule(), NumberRule()],
+          'name': [RequiredRule(), IsStringRule()],
+          'age': [RequiredRule(), IsNumberRule()],
           'email': [RequiredRule(), EmailRule()],
         };
 
@@ -570,8 +570,8 @@ void main() {
 
       test('should work with parallel validation disabled', () async {
         final rules = {
-          'name': [RequiredRule(), StringRule()],
-          'age': [RequiredRule(), NumberRule()],
+          'name': [RequiredRule(), IsStringRule()],
+          'age': [RequiredRule(), IsNumberRule()],
           'email': [RequiredRule(), EmailRule()],
         };
 
@@ -596,8 +596,8 @@ void main() {
       test('should handle early termination with sequential validation',
           () async {
         final rules = {
-          'name': [RequiredRule(), StringRule()],
-          'age': [RequiredRule(), NumberRule()],
+          'name': [RequiredRule(), IsStringRule()],
+          'age': [RequiredRule(), IsNumberRule()],
           'email': [RequiredRule(), EmailRule()],
         };
 

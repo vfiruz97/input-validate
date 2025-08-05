@@ -17,7 +17,7 @@ class MinRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
-    if (value == null) return false;
+    if (value == null) return true;
 
     if (value is num) {
       return value >= min;
@@ -50,7 +50,7 @@ class MaxRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
-    if (value == null) return false;
+    if (value == null) return true;
 
     if (value is num) {
       return value <= max;
@@ -81,6 +81,7 @@ class InRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
+    if (value == null) return true;
     return allowedValues.contains(value);
   }
 }

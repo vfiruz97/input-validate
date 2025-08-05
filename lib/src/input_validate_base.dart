@@ -253,7 +253,13 @@ class InputValidate {
     // Continue with normal validation for non-null values or fields without NullableRule or with RequiredRule
     for (final rule in rules) {
       try {
-        final passes = await rule.passes(value);
+        final futureOr = rule.passes(value);
+        bool passes;
+        if (futureOr is Future) {
+          passes = await futureOr;
+        } else {
+          passes = futureOr;
+        }
         if (!passes) {
           fieldErrors.add(rule.message);
           dev.log('  Rule ${rule.runtimeType} failed: ${rule.message}');

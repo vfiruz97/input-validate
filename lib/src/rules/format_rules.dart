@@ -19,7 +19,7 @@ class EmailRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
-    if (value == null) return false;
+    if (value == null) return true;
     if (value is! String) return false;
 
     return _emailPattern.hasMatch(value);

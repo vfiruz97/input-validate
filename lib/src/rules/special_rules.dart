@@ -31,6 +31,7 @@ class RequiredRule implements ValidationRule {
 /// all other validation rules for that field are skipped. If the value is not null,
 /// normal validation continues with all other rules.
 ///
+/// Special handling for List and Map types. They don't pass if they are empty.
 /// This rule itself always passes validation - the special behavior is handled
 /// in the validation engine.
 ///
@@ -51,7 +52,9 @@ class NullableRule implements ValidationRule {
 
   @override
   FutureOr<bool> passes(dynamic value) {
-    // This rule always passes - special handling is done in validation engine
-    return true;
+    if (value is List) return value.isNotEmpty;
+    if (value is Map) return value.isNotEmpty;
+
+    return true; // Always passes, special handling in validation engine
   }
 }
