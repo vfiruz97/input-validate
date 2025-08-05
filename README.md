@@ -249,10 +249,17 @@ final rules = {
 | `array.*.object.field`   | Array of objects | `users.*.profile.age`         |
 | `array.*.nested.*.field` | Deeply nested    | `groups.*.users.*.email`      |
 
+## 👤 Author
+
+**Firuz Vorisov**  
+[github.com/vfiruz97](https://github.com/vfiruz97)
+
+Feel free to open issues or contribute via PR!
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).

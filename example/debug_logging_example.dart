@@ -2,8 +2,10 @@ import 'package:input_validate/input_validate.dart';
 
 Future<void> main() async {
   print('=== Debug Logging Example ===');
-  print('This example demonstrates the debug logging capabilities of the input validation package.');
-  print('Check the developer console or logs to see detailed validation process information.\n');
+  print(
+      'This example demonstrates the debug logging capabilities of the input validation package.');
+  print(
+      'Check the developer console or logs to see detailed validation process information.\n');
 
   // Example 1: Simple validation with logging
   print('1. Simple field validation:');
@@ -94,7 +96,8 @@ Future<void> main() async {
     // This will fail with sequential validation and early termination
     await InputValidate.validate(input, rules, enableParallelValidation: false);
   } catch (e) {
-    print('❌ Sequential validation failed as expected: ${e.toString().split('\n').first}\n');
+    print(
+        '❌ Sequential validation failed as expected: ${e.toString().split('\n').first}\n');
   }
 
   print('=== Debug Logging Example Complete ===');
