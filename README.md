@@ -10,7 +10,8 @@ A powerful Dart package for validating nested map data structures with Laravel-s
 🔄 **Async rule support** - Full support for asynchronous validation rules  
 📊 **Comprehensive error reporting** - Detailed field-specific error messages with path information  
 🎨 **Type-safe** - Built with Dart's strong type system for reliability  
-💎 **Only validated data** - Returns only the fields that passed validation, stripping unvalidated data
+💎 **Only validated data** - Returns only the fields that passed validation, stripping unvalidated data  
+🔍 **Debug logging** - Comprehensive logging for debugging validation process and performance analysis
 
 ## Installation
 
@@ -173,6 +174,38 @@ final result = await InputValidate.validate(
 ### Field Path Caching
 
 The package automatically caches parsed field paths for improved performance on repeated validations.
+
+## Debug Logging
+
+The package includes comprehensive debug logging to help you understand the validation process and troubleshoot issues. All logs use Dart's built-in `log()` function from `dart:developer`.
+
+### Viewing Debug Logs
+
+In development, you can view debug logs by:
+
+1. **In VS Code/IDE**: Check the Debug Console when running your application
+2. **In Flutter**: Use `flutter logs` in a separate terminal
+3. **In Dart**: Use `dart --observe run your_file.dart` and check the observatory
+
+### What Gets Logged
+
+- Validation start/completion with timing information
+- Input data summary and rule expansion details
+- Individual field validation with value types and rule results  
+- Wildcard path expansion process
+- Error details and validation failures
+- Performance metrics for parallel vs sequential validation
+
+```dart
+// Run the debug logging example to see it in action
+dart run example/debug_logging_example.dart
+```
+
+The logging provides insights into:
+- Which rules pass/fail for each field
+- How wildcard paths expand to concrete paths
+- Performance differences between validation modes
+- Detailed error information for troubleshooting
 
 ## Error Handling
 
