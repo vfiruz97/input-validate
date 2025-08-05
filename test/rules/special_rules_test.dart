@@ -50,20 +50,19 @@ void main() {
   });
 
   group('NullableRule', () {
-    const wrappedRule = StringRule();
-    const rule = NullableRule(wrappedRule);
+    const rule = NullableRule();
 
-    test('should pass for null values', () async {
+    test('should always pass validation', () async {
       expect(await rule.passes(null), isTrue);
-    });
-
-    test('should delegate to wrapped rule for non-null values', () async {
       expect(await rule.passes('hello'), isTrue);
-      expect(await rule.passes(123), isFalse);
+      expect(await rule.passes(123), isTrue);
+      expect(await rule.passes(true), isTrue);
+      expect(await rule.passes([]), isTrue);
+      expect(await rule.passes({}), isTrue);
     });
 
-    test('should use wrapped rule message', () {
-      expect(rule.message, equals(wrappedRule.message));
+    test('should have correct message', () {
+      expect(rule.message, equals('Field can be null or valid'));
     });
   });
 }

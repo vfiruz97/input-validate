@@ -203,7 +203,7 @@ void main() {
 
       test('should handle nullable rules correctly', () async {
         final rules = {
-          'optional': [NullableRule(StringRule())],
+          'optional': [NullableRule(), StringRule()],
           'required': [RequiredRule(), StringRule()],
         };
 
@@ -407,7 +407,7 @@ void main() {
         final rules = {
           'title': [RequiredRule(), StringRule()],
           'users.*.name': [RequiredRule(), StringRule()],
-          'users.*.profile.bio': [NullableRule(StringRule())],
+          'users.*.profile.bio': [NullableRule(), StringRule()],
           'metadata.version': [RequiredRule(), NumberRule()],
         };
 

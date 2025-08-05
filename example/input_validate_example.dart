@@ -70,7 +70,7 @@ Future<void> nestedObjectValidationExample() async {
   final rules = {
     'user.name': [RequiredRule(), IsStringRule()],
     'user.email': [RequiredRule(), EmailRule()],
-    'user.profile.bio': [NullableRule(IsStringRule())],
+    'user.profile.bio': [NullableRule()],
     'user.profile.age': [RequiredRule(), IsNumberRule(), MinRule(18)],
     'settings.theme': [
       RequiredRule(),
@@ -213,9 +213,7 @@ Future<void> mixedValidationExample() async {
     'author.name': [RequiredRule(), IsStringRule()],
     'author.email': [RequiredRule(), EmailRule()],
     'tags.*.name': [RequiredRule(), IsStringRule()],
-    'tags.*.color': [
-      NullableRule(InRule({'red', 'blue', 'green', 'yellow'}))
-    ],
+    'tags.*.color': [NullableRule()],
     'metadata.version': [RequiredRule(), IsNumberRule()],
     'metadata.published': [RequiredRule(), IsBooleanRule()],
   };

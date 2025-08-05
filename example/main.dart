@@ -165,7 +165,7 @@
 //       'optionalField': [NullableRule(), StringRule()],
 //       'profile.optional': [NullableRule(), NumberRule(), MaxRule(1000)],
 //     });
-    
+
 //     log('✅ All validation passed - data is completely valid!');
 //     log('📦 Validated data contains ${validatedData.keys.length} fields');
 //   } on ValidationException catch (e) {

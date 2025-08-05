@@ -143,7 +143,52 @@ final rules = {
 
 ### Special Rules
 
-- `NullableRule(rule)` - Wraps another rule to allow null values
+- `NullableRule()` - Allows null values and skips other validation rules when value is null
+
+### Working with Nullable Fields
+
+The `NullableRule` provides special behavior for handling optional fields. When a field value is `null` and `NullableRule` is present in the validation rules, all other validation rules for that field are skipped.
+
+```dart
+final rules = {
+  // Required field - null not allowed
+  'user.name': [RequiredRule(), IsStringRule()],
+
+  // Optional field - can be null or valid string
+  'user.email': [
+    NullableRule(),     // Allow null values
+    IsStringRule(),     // Only applied if value is not null
+    EmailRule(),        // Only applied if value is not null
+  ],
+
+  // Optional field with constraints
+  'user.bio': [
+    NullableRule(),     // Allow null values
+    IsStringRule(),     // Only applied if value is not null
+    MinRule(10),        // Only applied if value is not null
+    MaxRule(500),       // Only applied if value is not null
+  ],
+};
+
+final input = {
+  'user': {
+    'name': 'John Doe',
+    'email': null,      // ✅ Passes validation (NullableRule allows null)
+    'bio': null,        // ✅ Passes validation (NullableRule allows null)
+  }
+};
+
+final result = await InputValidate.validate(input, rules);
+// Returns: {'user': {'name': 'John Doe', 'email': null, 'bio': null}}
+```
+
+**Important:** If both `RequiredRule` and `NullableRule` are present, `RequiredRule` takes precedence and null values will fail validation.
+
+```dart
+final rules = {
+  'field': [RequiredRule(), NullableRule(), IsStringRule()], // ❌ RequiredRule prevents null
+};
+```
 
 ## Performance Optimization
 

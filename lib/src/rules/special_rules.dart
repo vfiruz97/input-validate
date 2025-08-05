@@ -25,23 +25,33 @@ class RequiredRule implements ValidationRule {
   }
 }
 
-/// A validation rule wrapper that allows null values to pass validation.
+/// A special validation rule that allows null values to pass validation.
 ///
-/// This rule wraps another validation rule and makes it nullable by
-/// returning true if the value is null, otherwise delegating to the
-/// wrapped rule.
+/// When this rule is present in a field's validation rules and the field value is null,
+/// all other validation rules for that field are skipped. If the value is not null,
+/// normal validation continues with all other rules.
+///
+/// This rule itself always passes validation - the special behavior is handled
+/// in the validation engine.
+///
+/// Example:
+/// ```dart
+/// 'user.surname': [
+///   NullableRule(),     // Allow null values
+///   IsStringRule(),     // Only applied if value is not null
+///   MinRule(3),         // Only applied if value is not null
+///   MaxRule(20),        // Only applied if value is not null
+/// ]
+/// ```
 class NullableRule implements ValidationRule {
-  /// The wrapped validation rule to apply when value is not null.
-  final ValidationRule rule;
-
-  const NullableRule(this.rule);
+  const NullableRule();
 
   @override
-  String get message => rule.message;
+  String get message => 'Field can be null or valid';
 
   @override
   FutureOr<bool> passes(dynamic value) {
-    if (value == null) return true;
-    return rule.passes(value);
+    // This rule always passes - special handling is done in validation engine
+    return true;
   }
 }
