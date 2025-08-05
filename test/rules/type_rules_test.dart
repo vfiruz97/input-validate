@@ -11,7 +11,9 @@ void main() {
       expect(await rule.passes('123'), isTrue);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       expect(await rule.passes(123), isFalse);
       expect(await rule.passes(true), isFalse);
       expect(await rule.passes([]), isFalse);
@@ -39,7 +41,9 @@ void main() {
       expect(await rule.passes(-2.5), isTrue);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       expect(await rule.passes('123'), isFalse);
       expect(await rule.passes(true), isFalse);
       expect(await rule.passes([]), isFalse);
@@ -60,7 +64,9 @@ void main() {
       expect(await rule.passes(false), isTrue);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       expect(await rule.passes('true'), isFalse);
       expect(await rule.passes(1), isFalse);
       expect(await rule.passes(0), isFalse);
@@ -83,7 +89,9 @@ void main() {
       expect(await rule.passes(['a', 'b']), isTrue);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       expect(await rule.passes('[]'), isFalse);
       expect(await rule.passes({}), isFalse);
       expect(await rule.passes(123), isFalse);
@@ -105,7 +113,9 @@ void main() {
       expect(await rule.passes({1: 'one', 2: 'two'}), isTrue);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       expect(await rule.passes('{}'), isFalse);
       expect(await rule.passes([]), isFalse);
       expect(await rule.passes(123), isFalse);

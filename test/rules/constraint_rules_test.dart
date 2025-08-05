@@ -30,7 +30,9 @@ void main() {
       expect(await rule.passes([]), isFalse);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       const rule = MinRule(1);
       expect(await rule.passes(null), isTrue);
     });
@@ -73,7 +75,9 @@ void main() {
       expect(await rule.passes([1, 2, 3, 4]), isFalse);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       const rule = MaxRule(10);
       expect(await rule.passes(null), isTrue);
     });
@@ -99,7 +103,9 @@ void main() {
       expect(await rule.passes('orange'), isTrue);
     });
 
-    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+    test(
+        'should pass for null values (null handling delegated to RequiredRule)',
+        () async {
       const rule = InRule({'apple', 'banana', 'orange'});
 
       expect(await rule.passes('grape'), isFalse);
@@ -128,7 +134,8 @@ void main() {
 
     test('should have correct message', () {
       const rule = InRule({'red', 'green', 'blue'});
-      expect(rule.message, equals('This field must be one of: red, green, blue'));
+      expect(
+          rule.message, equals('This field must be one of: red, green, blue'));
     });
   });
 }

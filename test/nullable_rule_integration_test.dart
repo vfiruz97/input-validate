@@ -3,7 +3,9 @@ import 'package:test/test.dart';
 
 void main() {
   group('NullableRule Integration Tests', () {
-    test('should skip other rules when value is null and NullableRule is present', () async {
+    test(
+        'should skip other rules when value is null and NullableRule is present',
+        () async {
       final rules = {
         'user.surname': [
           NullableRule(),
@@ -49,7 +51,9 @@ void main() {
           }));
     });
 
-    test('should fail other rules when value is not null and does not meet requirements', () async {
+    test(
+        'should fail other rules when value is not null and does not meet requirements',
+        () async {
       final rules = {
         'user.surname': [
           NullableRule(),
@@ -70,7 +74,8 @@ void main() {
       );
     });
 
-    test('should fail when value is null but no NullableRule is present', () async {
+    test('should fail when value is null but no NullableRule is present',
+        () async {
       final rules = {
         'user.surname': [
           RequiredRule(), // Add RequiredRule to catch null values
@@ -147,14 +152,21 @@ void main() {
       };
 
       final result = await InputValidate.validate(input, rules);
-      expect(result['company']['departments'][0]['teams'][0]['members'][0]['bio'],
+      expect(
+          result['company']['departments'][0]['teams'][0]['members'][0]['bio'],
           equals('Software developer with 5 years experience'));
-      expect(result['company']['departments'][0]['teams'][0]['members'][1]['bio'], equals(null));
+      expect(
+          result['company']['departments'][0]['teams'][0]['members'][1]['bio'],
+          equals(null));
     });
 
-    test('should handle multiple fields with different nullable configurations', () async {
+    test('should handle multiple fields with different nullable configurations',
+        () async {
       final rules = {
-        'user.name': [RequiredRule(), IsStringRule()], // Required, no null allowed
+        'user.name': [
+          RequiredRule(),
+          IsStringRule()
+        ], // Required, no null allowed
         'user.email': [NullableRule(), IsStringRule(), EmailRule()], // Optional
         'user.age': [RequiredRule(), IsNumberRule(), MinRule(0)], // Required
         'user.bio': [NullableRule(), IsStringRule(), MinRule(10)], // Optional
@@ -182,9 +194,15 @@ void main() {
           }));
     });
 
-    test('should fail when required field is null even with other rules present', () async {
+    test(
+        'should fail when required field is null even with other rules present',
+        () async {
       final rules = {
-        'user.name': [RequiredRule(), NullableRule(), IsStringRule()], // Required overrides nullable
+        'user.name': [
+          RequiredRule(),
+          NullableRule(),
+          IsStringRule()
+        ], // Required overrides nullable
       };
 
       final input = {
@@ -204,7 +222,11 @@ void main() {
         'order.customer.email': [NullableRule(), IsStringRule(), EmailRule()],
         'order.items.*.name': [RequiredRule(), IsStringRule()],
         'order.items.*.price': [RequiredRule(), IsNumberRule(), MinRule(0)],
-        'order.items.*.description': [NullableRule(), IsStringRule(), MinRule(5)],
+        'order.items.*.description': [
+          NullableRule(),
+          IsStringRule(),
+          MinRule(5)
+        ],
         'order.notes': [NullableRule(), IsStringRule()],
       };
 
