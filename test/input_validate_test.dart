@@ -64,8 +64,8 @@ void main() {
     group('validate', () {
       test('should validate simple fields successfully', () async {
         final rules = {
-          'name': [RequiredRule(), StringRule()],
-          'age': [RequiredRule(), NumberRule()],
+          'name': [RequiredRule(), IsStringRule()],
+          'age': [RequiredRule(), IsNumberRule()],
         };
 
         final input = {

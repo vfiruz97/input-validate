@@ -35,8 +35,8 @@ dart pub get
 import 'package:input_validate/input_validate.dart';
 
 final rules = {
-  'name': [RequiredRule(), StringRule()],
-  'age': [RequiredRule(), NumberRule(), MinRule(18)],
+  'name': [RequiredRule(), IsStringRule()],
+  'age': [RequiredRule(), IsNumberRule(), MinRule(18)],
   'email': [RequiredRule(), EmailRule()],
 };
 
@@ -63,8 +63,8 @@ try {
 
 ```dart
 final rules = {
-  'user.name': [RequiredRule(), StringRule()],
-  'user.profile.age': [RequiredRule(), NumberRule(), MinRule(18)],
+  'user.name': [RequiredRule(), IsStringRule()],
+  'user.profile.age': [RequiredRule(), IsNumberRule(), MinRule(18)],
   'settings.theme': [RequiredRule(), InRule({'light', 'dark'})],
 };
 
@@ -84,9 +84,9 @@ final validated = await InputValidate.validate(input, rules);
 
 ```dart
 final rules = {
-  'users.*.name': [RequiredRule(), StringRule()],
+  'users.*.name': [RequiredRule(), IsStringRule()],
   'users.*.email': [RequiredRule(), EmailRule()],
-  'users.*.roles': [RequiredRule(), ListRule()],
+  'users.*.roles': [RequiredRule(), IsListRule()],
 };
 
 final input = {
@@ -113,9 +113,9 @@ final validated = await InputValidate.validate(input, rules);
 
 ```dart
 final rules = {
-  'departments.*.name': [RequiredRule(), StringRule()],
-  'departments.*.employees.*.name': [RequiredRule(), StringRule()],
-  'departments.*.employees.*.salary': [RequiredRule(), NumberRule()],
+  'departments.*.name': [RequiredRule(), IsStringRule()],
+  'departments.*.employees.*.name': [RequiredRule(), IsStringRule()],
+  'departments.*.employees.*.salary': [RequiredRule(), IsNumberRule()],
 };
 
 // Validates deeply nested arrays and objects
@@ -126,11 +126,11 @@ final rules = {
 ### Type Rules
 
 - `RequiredRule()` - Field must be present and not null/empty
-- `StringRule()` - Value must be a string
-- `NumberRule()` - Value must be a number (int or double)
-- `BooleanRule()` - Value must be a boolean
-- `ListRule()` - Value must be a list
-- `MapRule()` - Value must be a map
+- `IsStringRule()` - Value must be a string
+- `IsNumberRule()` - Value must be a number (int or double)
+- `IsBooleanRule()` - Value must be a boolean
+- `IsListRule()` - Value must be a list
+- `IsMapRule()` - Value must be a map
 
 ### Constraint Rules
 
@@ -261,7 +261,7 @@ $rules = [
 ```dart
 // Input Validate Dart
 final rules = {
-  'name': [RequiredRule(), StringRule()],
+  'name': [RequiredRule(), IsStringRule()],
   'users.*.email': [RequiredRule(), EmailRule()],
 };
 ```

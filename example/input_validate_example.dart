@@ -40,10 +40,10 @@ Future<void> basicValidationExample() async {
   print('📝 Example 1: Basic Field Validation');
 
   final rules = {
-    'name': [RequiredRule(), StringRule()],
-    'age': [RequiredRule(), NumberRule(), MinRule(0), MaxRule(120)],
+    'name': [RequiredRule(), IsStringRule()],
+    'age': [RequiredRule(), IsNumberRule(), MinRule(0), MaxRule(120)],
     'email': [RequiredRule(), EmailRule()],
-    'isActive': [RequiredRule(), BooleanRule()],
+    'isActive': [RequiredRule(), IsBooleanRule()],
   };
 
   final input = {
@@ -68,15 +68,15 @@ Future<void> nestedObjectValidationExample() async {
   print('📝 Example 2: Nested Object Validation');
 
   final rules = {
-    'user.name': [RequiredRule(), StringRule()],
+    'user.name': [RequiredRule(), IsStringRule()],
     'user.email': [RequiredRule(), EmailRule()],
-    'user.profile.bio': [NullableRule(StringRule())],
-    'user.profile.age': [RequiredRule(), NumberRule(), MinRule(18)],
+    'user.profile.bio': [NullableRule(IsStringRule())],
+    'user.profile.age': [RequiredRule(), IsNumberRule(), MinRule(18)],
     'settings.theme': [
       RequiredRule(),
       InRule({'light', 'dark'})
     ],
-    'settings.notifications': [RequiredRule(), BooleanRule()],
+    'settings.notifications': [RequiredRule(), IsBooleanRule()],
   };
 
   final input = {
@@ -111,10 +111,10 @@ Future<void> arrayValidationExample() async {
   print('📝 Example 3: Array Validation with Wildcards');
 
   final rules = {
-    'users.*.name': [RequiredRule(), StringRule()],
+    'users.*.name': [RequiredRule(), IsStringRule()],
     'users.*.email': [RequiredRule(), EmailRule()],
-    'users.*.age': [RequiredRule(), NumberRule(), MinRule(0)],
-    'users.*.roles': [RequiredRule(), ListRule()],
+    'users.*.age': [RequiredRule(), IsNumberRule(), MinRule(0)],
+    'users.*.roles': [RequiredRule(), IsListRule()],
   };
 
   final input = {
@@ -152,10 +152,10 @@ Future<void> nestedWildcardExample() async {
   print('📝 Example 4: Nested Wildcard Validation');
 
   final rules = {
-    'departments.*.name': [RequiredRule(), StringRule()],
-    'departments.*.employees.*.name': [RequiredRule(), StringRule()],
-    'departments.*.employees.*.position': [RequiredRule(), StringRule()],
-    'departments.*.employees.*.salary': [RequiredRule(), NumberRule(), MinRule(0)],
+    'departments.*.name': [RequiredRule(), IsStringRule()],
+    'departments.*.employees.*.name': [RequiredRule(), IsStringRule()],
+    'departments.*.employees.*.position': [RequiredRule(), IsStringRule()],
+    'departments.*.employees.*.salary': [RequiredRule(), IsNumberRule(), MinRule(0)],
   };
 
   final input = {
@@ -205,15 +205,15 @@ Future<void> mixedValidationExample() async {
   print('📝 Example 5: Mixed Validation Patterns');
 
   final rules = {
-    'title': [RequiredRule(), StringRule(), MinRule(5)],
-    'author.name': [RequiredRule(), StringRule()],
+    'title': [RequiredRule(), IsStringRule(), MinRule(5)],
+    'author.name': [RequiredRule(), IsStringRule()],
     'author.email': [RequiredRule(), EmailRule()],
-    'tags.*.name': [RequiredRule(), StringRule()],
+    'tags.*.name': [RequiredRule(), IsStringRule()],
     'tags.*.color': [
       NullableRule(InRule({'red', 'blue', 'green', 'yellow'}))
     ],
-    'metadata.version': [RequiredRule(), NumberRule()],
-    'metadata.published': [RequiredRule(), BooleanRule()],
+    'metadata.version': [RequiredRule(), IsNumberRule()],
+    'metadata.published': [RequiredRule(), IsBooleanRule()],
   };
 
   final input = {
@@ -251,9 +251,9 @@ Future<void> performanceOptimizationExample() async {
   print('📝 Example 6: Performance Optimization Features');
 
   final rules = {
-    'field1': [RequiredRule(), StringRule()],
-    'field2': [RequiredRule(), NumberRule()],
-    'field3': [RequiredRule(), BooleanRule()],
+    'field1': [RequiredRule(), IsStringRule()],
+    'field2': [RequiredRule(), IsNumberRule()],
+    'field3': [RequiredRule(), IsBooleanRule()],
     'field4': [RequiredRule(), EmailRule()],
   };
 
@@ -287,10 +287,10 @@ Future<void> errorHandlingExample() async {
   print('📝 Example 7: Error Handling and Reporting');
 
   final rules = {
-    'name': [RequiredRule(), StringRule(), MinRule(2)],
+    'name': [RequiredRule(), IsStringRule(), MinRule(2)],
     'email': [RequiredRule(), EmailRule()],
-    'age': [RequiredRule(), NumberRule(), MinRule(18), MaxRule(65)],
-    'users.*.name': [RequiredRule(), StringRule()],
+    'age': [RequiredRule(), IsNumberRule(), MinRule(18), MaxRule(65)],
+    'users.*.name': [RequiredRule(), IsStringRule()],
     'users.*.email': [RequiredRule(), EmailRule()],
   };
 
@@ -322,9 +322,9 @@ Future<void> customRuleExample() async {
   print('📝 Example 8: Custom Validation Rules');
 
   final rules = {
-    'username': [RequiredRule(), StringRule(), CustomAlphanumericRule()],
-    'password': [RequiredRule(), StringRule(), CustomPasswordStrengthRule()],
-    'confirmPassword': [RequiredRule(), StringRule()],
+    'username': [RequiredRule(), IsStringRule(), CustomAlphanumericRule()],
+    'password': [RequiredRule(), IsStringRule(), CustomPasswordStrengthRule()],
+    'confirmPassword': [RequiredRule(), IsStringRule()],
   };
 
   final input = {

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'validation_rule.dart';
 
 /// A validation rule that checks if a value is a string.
-class StringRule implements ValidationRule {
-  const StringRule();
+class IsStringRule implements ValidationRule {
+  const IsStringRule();
 
   @override
   String get message => 'This field must be a string';
@@ -16,8 +16,8 @@ class StringRule implements ValidationRule {
 }
 
 /// A validation rule that checks if a value is a number (int or double).
-class NumberRule implements ValidationRule {
-  const NumberRule();
+class IsNumberRule implements ValidationRule {
+  const IsNumberRule();
 
   @override
   String get message => 'This field must be a number';
@@ -29,8 +29,8 @@ class NumberRule implements ValidationRule {
 }
 
 /// A validation rule that checks if a value is a boolean.
-class BooleanRule implements ValidationRule {
-  const BooleanRule();
+class IsBooleanRule implements ValidationRule {
+  const IsBooleanRule();
 
   @override
   String get message => 'This field must be a boolean';
@@ -42,8 +42,8 @@ class BooleanRule implements ValidationRule {
 }
 
 /// A validation rule that checks if a value is a list.
-class ListRule implements ValidationRule {
-  const ListRule();
+class IsListRule implements ValidationRule {
+  const IsListRule();
 
   @override
   String get message => 'This field must be a list';
@@ -55,8 +55,8 @@ class ListRule implements ValidationRule {
 }
 
 /// A validation rule that checks if a value is a map.
-class MapRule implements ValidationRule {
-  const MapRule();
+class IsMapRule implements ValidationRule {
+  const IsMapRule();
 
   @override
   String get message => 'This field must be a map';
@@ -66,3 +66,19 @@ class MapRule implements ValidationRule {
     return value is Map;
   }
 }
+
+// Backward compatibility - deprecated aliases
+/// @deprecated Use IsStringRule instead. Will be removed in a future version.
+typedef StringRule = IsStringRule;
+
+/// @deprecated Use IsNumberRule instead. Will be removed in a future version.
+typedef NumberRule = IsNumberRule;
+
+/// @deprecated Use IsBooleanRule instead. Will be removed in a future version.
+typedef BooleanRule = IsBooleanRule;
+
+/// @deprecated Use IsListRule instead. Will be removed in a future version.
+typedef ListRule = IsListRule;
+
+/// @deprecated Use IsMapRule instead. Will be removed in a future version.
+typedef MapRule = IsMapRule;
