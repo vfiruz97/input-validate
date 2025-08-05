@@ -14,7 +14,8 @@ class InputValidate {
   InputValidate._();
 
   // Cache for parsed field paths to improve performance
-  static final Map<String, List<FieldPath>> _pathCache = <String, List<FieldPath>>{};
+  static final Map<String, List<FieldPath>> _pathCache =
+      <String, List<FieldPath>>{};
 
   /// Gets parsed field path segments from cache or parses and caches them.
   static List<FieldPath> _getCachedFieldPath(String path) {
@@ -22,7 +23,8 @@ class InputValidate {
   }
 
   /// Checks if validation failures include a RequiredRule failure.
-  static bool _hasRequiredRuleFailure(List<ValidationRule> rules, List<String> errors) {
+  static bool _hasRequiredRuleFailure(
+      List<ValidationRule> rules, List<String> errors) {
     // Check if any rule is a RequiredRule and has the RequiredRule error message
     for (final rule in rules) {
       if (rule.runtimeType.toString() == 'RequiredRule') {
@@ -87,7 +89,8 @@ class InputValidate {
         dev.log('Validating field: $fieldPath');
 
         try {
-          final fieldErrors = await _validateField(fieldPath, input, fieldRules);
+          final fieldErrors =
+              await _validateField(fieldPath, input, fieldRules);
           return (fieldPath, fieldErrors);
         } catch (e) {
           dev.log('Error validating field $fieldPath: $e');
@@ -115,14 +118,16 @@ class InputValidate {
         dev.log('Validating field: $fieldPath');
 
         try {
-          final fieldErrors = await _validateField(fieldPath, input, fieldRules);
+          final fieldErrors =
+              await _validateField(fieldPath, input, fieldRules);
           if (fieldErrors == null) {
             validatedPaths.add(fieldPath);
           } else {
             errors[fieldPath] = fieldErrors;
             // Early termination for critical validation failures
             if (_hasRequiredRuleFailure(fieldRules, fieldErrors)) {
-              dev.log('Early termination due to RequiredRule failure on $fieldPath');
+              dev.log(
+                  'Early termination due to RequiredRule failure on $fieldPath');
               break;
             }
           }
@@ -179,7 +184,8 @@ class InputValidate {
       if (currentData is List) {
         for (int i = 0; i < currentData.length; i++) {
           final newPath = '$currentPath.$i';
-          _findArrayPaths(remainingSegments, currentData[i], newPath, arrayPaths);
+          _findArrayPaths(
+              remainingSegments, currentData[i], newPath, arrayPaths);
         }
       }
     } else {
@@ -251,8 +257,10 @@ class InputValidate {
     final result = <String, dynamic>{};
 
     // Filter out array paths - they will be included when their elements are processed
-    final fieldPaths = validatedPaths.where((path) => !_isArrayPath(path, input)).toSet();
-    final arrayPaths = validatedPaths.where((path) => _isArrayPath(path, input)).toSet();
+    final fieldPaths =
+        validatedPaths.where((path) => !_isArrayPath(path, input)).toSet();
+    final arrayPaths =
+        validatedPaths.where((path) => _isArrayPath(path, input)).toSet();
 
     // Process regular field paths
     for (final path in fieldPaths) {
@@ -294,7 +302,8 @@ class InputValidate {
       if (current is Map<String, dynamic>) {
         // Check if next segment is a numeric index (indicating we need an array)
         final nextSegment = i + 1 < segments.length ? segments[i + 1] : null;
-        final needsArray = nextSegment != null && int.tryParse(nextSegment) != null;
+        final needsArray =
+            nextSegment != null && int.tryParse(nextSegment) != null;
 
         if (needsArray) {
           current[segment] ??= <dynamic>[];
@@ -362,7 +371,9 @@ class InputValidate {
     String currentPath,
   ) {
     if (pathSegments.isEmpty) {
-      return [currentPath.isEmpty ? '' : currentPath.substring(1)]; // Remove leading dot
+      return [
+        currentPath.isEmpty ? '' : currentPath.substring(1)
+      ]; // Remove leading dot
     }
 
     final segment = pathSegments.first;

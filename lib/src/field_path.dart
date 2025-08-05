@@ -24,7 +24,11 @@ class FieldPath {
       throw ArgumentError('Field path cannot be empty');
     }
 
-    return path.split('.').where((segment) => segment.isNotEmpty).map((segment) => FieldPath(segment)).toList();
+    return path
+        .split('.')
+        .where((segment) => segment.isNotEmpty)
+        .map((segment) => FieldPath(segment))
+        .toList();
   }
 
   @override
@@ -32,7 +36,10 @@ class FieldPath {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is FieldPath && runtimeType == other.runtimeType && name == other.name;
+      identical(this, other) ||
+      other is FieldPath &&
+          runtimeType == other.runtimeType &&
+          name == other.name;
 
   @override
   int get hashCode => name.hashCode;

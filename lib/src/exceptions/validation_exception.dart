@@ -51,7 +51,8 @@ class MultipleValidationException extends ValidationException {
     Map<String, List<String>> errors,
   ) {
     final count = errors.length;
-    final message = 'Validation failed for $count field${count == 1 ? '' : 's'}';
+    final message =
+        'Validation failed for $count field${count == 1 ? '' : 's'}';
 
     return MultipleValidationException(count, message, errors);
   }

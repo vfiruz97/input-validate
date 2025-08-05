@@ -76,7 +76,8 @@ class InRule implements ValidationRule {
   const InRule(this.allowedValues);
 
   @override
-  String get message => 'This field must be one of: ${allowedValues.join(', ')}';
+  String get message =>
+      'This field must be one of: ${allowedValues.join(', ')}';
 
   @override
   FutureOr<bool> passes(dynamic value) {

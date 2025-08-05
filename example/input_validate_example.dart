@@ -155,7 +155,11 @@ Future<void> nestedWildcardExample() async {
     'departments.*.name': [RequiredRule(), IsStringRule()],
     'departments.*.employees.*.name': [RequiredRule(), IsStringRule()],
     'departments.*.employees.*.position': [RequiredRule(), IsStringRule()],
-    'departments.*.employees.*.salary': [RequiredRule(), IsNumberRule(), MinRule(0)],
+    'departments.*.employees.*.salary': [
+      RequiredRule(),
+      IsNumberRule(),
+      MinRule(0)
+    ],
   };
 
   final input = {
@@ -267,7 +271,8 @@ Future<void> performanceOptimizationExample() async {
   // Parallel validation (default, faster for multiple independent fields)
   print('⚡ Using parallel validation (default):');
   final stopwatch1 = Stopwatch()..start();
-  final result1 = await InputValidate.validate(input, rules, enableParallelValidation: true);
+  final result1 = await InputValidate.validate(input, rules,
+      enableParallelValidation: true);
   stopwatch1.stop();
   print('   Result: $result1');
   print('   Time: ${stopwatch1.elapsedMicroseconds}μs');
@@ -275,7 +280,8 @@ Future<void> performanceOptimizationExample() async {
   // Sequential validation (with early termination for required failures)
   print('⏳ Using sequential validation:');
   final stopwatch2 = Stopwatch()..start();
-  final result2 = await InputValidate.validate(input, rules, enableParallelValidation: false);
+  final result2 = await InputValidate.validate(input, rules,
+      enableParallelValidation: false);
   stopwatch2.stop();
   print('   Result: $result2');
   print('   Time: ${stopwatch2.elapsedMicroseconds}μs');

@@ -128,7 +128,8 @@ void main() {
 
     test('should have correct message', () {
       const rule = InRule({'red', 'green', 'blue'});
-      expect(rule.message, equals('This field must be one of: red, green, blue'));
+      expect(
+          rule.message, equals('This field must be one of: red, green, blue'));
     });
   });
 }
