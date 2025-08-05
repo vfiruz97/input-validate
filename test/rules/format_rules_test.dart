@@ -23,8 +23,8 @@ void main() {
       expect(await rule.passes(''), isFalse);
     });
 
-    test('should fail for null values', () async {
-      expect(await rule.passes(null), isFalse);
+    test('should pass for null values (null handling delegated to RequiredRule)', () async {
+      expect(await rule.passes(null), isTrue);
     });
 
     test('should fail for non-string values', () async {

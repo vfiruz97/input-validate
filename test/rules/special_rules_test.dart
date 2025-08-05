@@ -52,13 +52,15 @@ void main() {
   group('NullableRule', () {
     const rule = NullableRule();
 
-    test('should always pass validation', () async {
+    test('should pass for null and non-empty collections, fail for empty collections', () async {
       expect(await rule.passes(null), isTrue);
       expect(await rule.passes('hello'), isTrue);
       expect(await rule.passes(123), isTrue);
       expect(await rule.passes(true), isTrue);
-      expect(await rule.passes([]), isTrue);
-      expect(await rule.passes({}), isTrue);
+      expect(await rule.passes([]), isFalse); // Empty list should fail
+      expect(await rule.passes({}), isFalse); // Empty map should fail
+      expect(await rule.passes([1, 2]), isTrue); // Non-empty list should pass
+      expect(await rule.passes({'key': 'value'}), isTrue); // Non-empty map should pass
     });
 
     test('should have correct message', () {

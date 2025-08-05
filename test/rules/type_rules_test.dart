@@ -11,12 +11,12 @@ void main() {
       expect(await rule.passes('123'), isTrue);
     });
 
-    test('should fail for non-string values', () async {
+    test('should pass for null values (null handling delegated to RequiredRule)', () async {
       expect(await rule.passes(123), isFalse);
       expect(await rule.passes(true), isFalse);
       expect(await rule.passes([]), isFalse);
       expect(await rule.passes({}), isFalse);
-      expect(await rule.passes(null), isFalse);
+      expect(await rule.passes(null), isTrue);
     });
 
     test('should have correct message', () {
@@ -39,12 +39,12 @@ void main() {
       expect(await rule.passes(-2.5), isTrue);
     });
 
-    test('should fail for non-number values', () async {
+    test('should pass for null values (null handling delegated to RequiredRule)', () async {
       expect(await rule.passes('123'), isFalse);
       expect(await rule.passes(true), isFalse);
       expect(await rule.passes([]), isFalse);
       expect(await rule.passes({}), isFalse);
-      expect(await rule.passes(null), isFalse);
+      expect(await rule.passes(null), isTrue);
     });
 
     test('should have correct message', () {
@@ -60,13 +60,13 @@ void main() {
       expect(await rule.passes(false), isTrue);
     });
 
-    test('should fail for non-boolean values', () async {
+    test('should pass for null values (null handling delegated to RequiredRule)', () async {
       expect(await rule.passes('true'), isFalse);
       expect(await rule.passes(1), isFalse);
       expect(await rule.passes(0), isFalse);
       expect(await rule.passes([]), isFalse);
       expect(await rule.passes({}), isFalse);
-      expect(await rule.passes(null), isFalse);
+      expect(await rule.passes(null), isTrue);
     });
 
     test('should have correct message', () {
@@ -83,12 +83,12 @@ void main() {
       expect(await rule.passes(['a', 'b']), isTrue);
     });
 
-    test('should fail for non-list values', () async {
+    test('should pass for null values (null handling delegated to RequiredRule)', () async {
       expect(await rule.passes('[]'), isFalse);
       expect(await rule.passes({}), isFalse);
       expect(await rule.passes(123), isFalse);
       expect(await rule.passes(true), isFalse);
-      expect(await rule.passes(null), isFalse);
+      expect(await rule.passes(null), isTrue);
     });
 
     test('should have correct message', () {
@@ -105,12 +105,12 @@ void main() {
       expect(await rule.passes({1: 'one', 2: 'two'}), isTrue);
     });
 
-    test('should fail for non-map values', () async {
+    test('should pass for null values (null handling delegated to RequiredRule)', () async {
       expect(await rule.passes('{}'), isFalse);
       expect(await rule.passes([]), isFalse);
       expect(await rule.passes(123), isFalse);
       expect(await rule.passes(true), isFalse);
-      expect(await rule.passes(null), isFalse);
+      expect(await rule.passes(null), isTrue);
     });
 
     test('should have correct message', () {

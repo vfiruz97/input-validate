@@ -35,6 +35,12 @@ dart pub get
 ```dart
 import 'package:input_validate/input_validate.dart';
 
+final rules = {
+  'name':   [RequiredRule(), IsStringRule()],
+  'age':    [RequiredRule(), IsNumberRule(), MinRule(18)],
+  'email':  [RequiredRule(), EmailRule()],
+};
+
 final input = {
   'name': 'John Doe',
   'age': 25,
@@ -43,11 +49,7 @@ final input = {
 };
 
 try {
-  final validated = await InputValidate.validate(input, {
-    'name':   [RequiredRule(), IsStringRule()],
-    'age':    [RequiredRule(), IsNumberRule(), MinRule(18)],
-    'email':  [RequiredRule(), EmailRule()],
-  });
+  final validated = await InputValidate.validate(input, rules);
   print(validated);
   // Output: {name: John Doe, age: 25, email: john@example.com}
   // Notice: password field is stripped because it wasn't validated
@@ -262,7 +264,7 @@ class CustomPasswordRule implements ValidationRule {
   String get message => 'Password must contain uppercase, lowercase, number, and special character.';
 
   @override
-  bool passes(dynamic value) {
+  FutureOr<bool> passes(dynamic value) {
     if (value is! String || value.length < 8) return false;
 
     return RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]').hasMatch(value);
