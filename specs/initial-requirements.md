@@ -92,4 +92,5 @@ final validatedData = await InputValidate.validate(input, rules);
 ## Code Style
 
 - Ensure proper separation of concerns by creating a suitable folder structure
+- Put `const` constructors everywhere possible
 - Use log from dart:developer rather than print or debugPrint for logging
