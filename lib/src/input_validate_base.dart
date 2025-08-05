@@ -13,12 +13,38 @@ class InputValidate {
   // Private constructor to prevent instantiation
   InputValidate._();
 
+  // Cache for parsed field paths to improve performance
+  static final Map<String, List<FieldPath>> _pathCache = <String, List<FieldPath>>{};
+
+  /// Gets parsed field path segments from cache or parses and caches them.
+  static List<FieldPath> _getCachedFieldPath(String path) {
+    return _pathCache.putIfAbsent(path, () => FieldPath.parse(path));
+  }
+
+  /// Checks if validation failures include a RequiredRule failure.
+  static bool _hasRequiredRuleFailure(List<ValidationRule> rules, List<String> errors) {
+    // Check if any rule is a RequiredRule and has the RequiredRule error message
+    for (final rule in rules) {
+      if (rule.runtimeType.toString() == 'RequiredRule') {
+        for (final error in errors) {
+          if (error.contains('required') || error == rule.message) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   /// Validates input data against the provided rules.
   ///
   /// Returns a map containing only the validated fields, stripping any
   /// unvalidated data from the input.
   ///
   /// Throws [ValidationException] if any validation rule fails.
+  ///
+  /// If [enableParallelValidation] is true (default), field validations
+  /// will run in parallel for better performance.
   ///
   /// Example:
   /// ```dart
@@ -33,8 +59,9 @@ class InputValidate {
   /// ```
   static Future<Map<String, dynamic>> validate(
     Map<String, dynamic> input,
-    Map<String, List<ValidationRule>> rules,
-  ) async {
+    Map<String, List<ValidationRule>> rules, {
+    bool enableParallelValidation = true,
+  }) async {
     dev.log('Starting validation with ${rules.length} rule sets');
 
     final errors = <String, List<String>>{};
@@ -51,19 +78,58 @@ class InputValidate {
       }
     }
 
-    // Process each rule set
-    for (final entry in expandedRules.entries) {
-      final fieldPath = entry.key;
-      final fieldRules = entry.value;
+    if (enableParallelValidation) {
+      // Process all rule sets in parallel for better performance
+      final validationFutures = expandedRules.entries.map((entry) async {
+        final fieldPath = entry.key;
+        final fieldRules = entry.value;
 
-      dev.log('Validating field: $fieldPath');
+        dev.log('Validating field: $fieldPath');
 
-      try {
-        await _validateField(fieldPath, input, fieldRules, errors);
-        validatedPaths.add(fieldPath);
-      } catch (e) {
-        dev.log('Error validating field $fieldPath: $e');
-        // Error already added to errors map in _validateField
+        try {
+          final fieldErrors = await _validateField(fieldPath, input, fieldRules);
+          return (fieldPath, fieldErrors);
+        } catch (e) {
+          dev.log('Error validating field $fieldPath: $e');
+          return (fieldPath, ['Validation error: $e']);
+        }
+      }).toList();
+
+      // Wait for all validations to complete
+      final validationResults = await Future.wait(validationFutures);
+
+      // Collect successfully validated paths and aggregate errors
+      for (final (fieldPath, fieldErrors) in validationResults) {
+        if (fieldErrors == null) {
+          validatedPaths.add(fieldPath);
+        } else {
+          errors[fieldPath] = fieldErrors;
+        }
+      }
+    } else {
+      // Sequential validation with early termination on RequiredRule failures
+      for (final entry in expandedRules.entries) {
+        final fieldPath = entry.key;
+        final fieldRules = entry.value;
+
+        dev.log('Validating field: $fieldPath');
+
+        try {
+          final fieldErrors = await _validateField(fieldPath, input, fieldRules);
+          if (fieldErrors == null) {
+            validatedPaths.add(fieldPath);
+          } else {
+            errors[fieldPath] = fieldErrors;
+            // Early termination for critical validation failures
+            if (_hasRequiredRuleFailure(fieldRules, fieldErrors)) {
+              dev.log('Early termination due to RequiredRule failure on $fieldPath');
+              break;
+            }
+          }
+        } catch (e) {
+          dev.log('Error validating field $fieldPath: $e');
+          errors[fieldPath] = ['Validation error: $e'];
+        }
       }
     }
 
@@ -86,7 +152,7 @@ class InputValidate {
     String currentPath,
     Set<String> arrayPaths,
   ) {
-    final pathSegments = FieldPath.parse(rulePath);
+    final pathSegments = _getCachedFieldPath(rulePath);
     _findArrayPaths(pathSegments, input, '', arrayPaths);
   }
 
@@ -129,27 +195,29 @@ class InputValidate {
     }
   }
 
-  /// Validates a single field against its rules.
-  static Future<void> _validateField(
+  /// Validates a single field against its rules and returns any errors.
+  static Future<List<String>?> _validateField(
     String fieldPath,
     Map<String, dynamic> input,
     List<ValidationRule> rules,
-    Map<String, List<String>> errors,
   ) async {
     final value = _getValueAtPath(input, fieldPath);
+    final fieldErrors = <String>[];
 
     for (final rule in rules) {
       try {
         final passes = await rule.passes(value);
         if (!passes) {
-          errors.putIfAbsent(fieldPath, () => []).add(rule.message);
+          fieldErrors.add(rule.message);
           dev.log('Validation failed for $fieldPath: ${rule.message}');
         }
       } catch (e) {
-        errors.putIfAbsent(fieldPath, () => []).add('Validation error: $e');
+        fieldErrors.add('Validation error: $e');
         dev.log('Exception during validation of $fieldPath: $e');
       }
     }
+
+    return fieldErrors.isEmpty ? null : fieldErrors;
   }
 
   /// Extracts a value from the input map using dot notation path.
@@ -275,7 +343,7 @@ class InputValidate {
       }
 
       // Parse the path to identify wildcard positions
-      final pathSegments = FieldPath.parse(rulePath);
+      final pathSegments = _getCachedFieldPath(rulePath);
       final expandedPaths = _generateConcretePaths(pathSegments, input, '');
 
       // Add all expanded paths with the same rules

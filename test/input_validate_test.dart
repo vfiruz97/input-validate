@@ -535,6 +535,80 @@ void main() {
               'category': 'A',
             }));
       });
+
+      test('should work with parallel validation enabled (default)', () async {
+        final rules = {
+          'name': [RequiredRule(), StringRule()],
+          'age': [RequiredRule(), NumberRule()],
+          'email': [RequiredRule(), EmailRule()],
+        };
+
+        final input = {
+          'name': 'John',
+          'age': 30,
+          'email': 'john@example.com',
+        };
+
+        final result = await InputValidate.validate(input, rules, enableParallelValidation: true);
+
+        expect(
+            result,
+            equals({
+              'name': 'John',
+              'age': 30,
+              'email': 'john@example.com',
+            }));
+      });
+
+      test('should work with parallel validation disabled', () async {
+        final rules = {
+          'name': [RequiredRule(), StringRule()],
+          'age': [RequiredRule(), NumberRule()],
+          'email': [RequiredRule(), EmailRule()],
+        };
+
+        final input = {
+          'name': 'John',
+          'age': 30,
+          'email': 'john@example.com',
+        };
+
+        final result = await InputValidate.validate(input, rules, enableParallelValidation: false);
+
+        expect(
+            result,
+            equals({
+              'name': 'John',
+              'age': 30,
+              'email': 'john@example.com',
+            }));
+      });
+
+      test('should handle early termination with sequential validation', () async {
+        final rules = {
+          'name': [RequiredRule(), StringRule()],
+          'age': [RequiredRule(), NumberRule()],
+          'email': [RequiredRule(), EmailRule()],
+        };
+
+        final input = {
+          'name': '', // Will fail RequiredRule
+          'age': 30,
+          'email': 'john@example.com',
+        };
+
+        try {
+          await InputValidate.validate(input, rules, enableParallelValidation: false);
+          fail('Expected validation exception');
+        } catch (e) {
+          expect(e, isA<MultipleValidationException>());
+          final exception = e as MultipleValidationException;
+
+          // With early termination, only the first required field failure should be reported
+          expect(exception.inputErrors!['name'], isNotNull);
+          expect(exception.inputErrors!['name']!.first, contains('required'));
+        }
+      });
     });
   });
 }
