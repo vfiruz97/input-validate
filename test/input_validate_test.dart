@@ -111,7 +111,8 @@ void main() {
             }));
       });
 
-      test('should throw MultipleValidationException for validation failures', () async {
+      test('should throw MultipleValidationException for validation failures',
+          () async {
         final rules = {
           'name': [RequiredRule(), IsStringRule()],
           'age': [RequiredRule(), IsNumberRule()],
@@ -150,7 +151,8 @@ void main() {
 
           expect(exception.failureCount, equals(3));
           expect(exception.inputErrors, isNotNull);
-          expect(exception.inputErrors!.keys, containsAll(['name', 'email', 'age']));
+          expect(exception.inputErrors!.keys,
+              containsAll(['name', 'email', 'age']));
         }
       });
 
@@ -171,7 +173,8 @@ void main() {
           final exception = e as MultipleValidationException;
 
           expect(exception.inputErrors!['password'], hasLength(1));
-          expect(exception.inputErrors!['password']!.first, contains('at least 8'));
+          expect(exception.inputErrors!['password']!.first,
+              contains('at least 8'));
         }
       });
 
@@ -193,7 +196,8 @@ void main() {
           final exception = e as MultipleValidationException;
 
           expect(exception.inputErrors!['missing.field'], isNotNull);
-          expect(exception.inputErrors!['missing.field']!.first, contains('required'));
+          expect(exception.inputErrors!['missing.field']!.first,
+              contains('required'));
         }
       });
 
@@ -319,8 +323,10 @@ void main() {
 
           expect(exception.inputErrors!['users.1.name'], isNotNull);
           expect(exception.inputErrors!['users.1.email'], isNotNull);
-          expect(exception.inputErrors!['users.1.name']!.first, contains('required'));
-          expect(exception.inputErrors!['users.1.email']!.first, contains('valid email'));
+          expect(exception.inputErrors!['users.1.name']!.first,
+              contains('required'));
+          expect(exception.inputErrors!['users.1.email']!.first,
+              contains('valid email'));
         }
       });
 
@@ -496,7 +502,8 @@ void main() {
           final exception = e as MultipleValidationException;
 
           expect(exception.inputErrors!['test'], isNotNull);
-          expect(exception.inputErrors!['test']!.first, contains('Validation error'));
+          expect(exception.inputErrors!['test']!.first,
+              contains('Validation error'));
         }
       });
 
@@ -549,7 +556,8 @@ void main() {
           'email': 'john@example.com',
         };
 
-        final result = await InputValidate.validate(input, rules, enableParallelValidation: true);
+        final result = await InputValidate.validate(input, rules,
+            enableParallelValidation: true);
 
         expect(
             result,
@@ -573,7 +581,8 @@ void main() {
           'email': 'john@example.com',
         };
 
-        final result = await InputValidate.validate(input, rules, enableParallelValidation: false);
+        final result = await InputValidate.validate(input, rules,
+            enableParallelValidation: false);
 
         expect(
             result,
@@ -584,7 +593,8 @@ void main() {
             }));
       });
 
-      test('should handle early termination with sequential validation', () async {
+      test('should handle early termination with sequential validation',
+          () async {
         final rules = {
           'name': [RequiredRule(), IsStringRule()],
           'age': [RequiredRule(), IsNumberRule()],
@@ -598,7 +608,8 @@ void main() {
         };
 
         try {
-          await InputValidate.validate(input, rules, enableParallelValidation: false);
+          await InputValidate.validate(input, rules,
+              enableParallelValidation: false);
           fail('Expected validation exception');
         } catch (e) {
           expect(e, isA<MultipleValidationException>());
@@ -647,7 +658,11 @@ void main() {
 
         final rules = {
           'name': [required(), IsStringRule()], // Mixed: concise + verbose
-          'score': [RequiredRule(), number(), min(0)], // Mixed: verbose + concise
+          'score': [
+            RequiredRule(),
+            number(),
+            min(0)
+          ], // Mixed: verbose + concise
           'status': [
             required(),
             string(),

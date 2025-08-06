@@ -30,8 +30,6 @@ dart pub get
 
 ## Quick Start
 
-## Quick Start
-
 ### Basic Validation
 
 ```dart

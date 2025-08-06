@@ -112,8 +112,6 @@ void main(List<String> args) async {
   };
 
   try {
-    // === EXAMPLE 1: CONCISE SYNTAX (NEW APPROACH) ===
-    print('\n🚀 Example 1: Using Concise Syntax');
     final validatedData = await InputValidate.validate(data, {
       // === BASIC SCALAR VALIDATION ===
       'name': [required(), string(), min(2), max(80)],
@@ -147,29 +145,35 @@ void main(List<String> args) async {
 
       // === COMPLEX NESTED STRUCTURE VALIDATION ===
       'company.departments': [required(), list(), min(1), max(5)],
-      'company.departments.*.name': [RequiredRule(), IsStringRule(), MinRule(3), MaxRule(30)],
-      'company.departments.*.teams': [RequiredRule(), IsListRule(), MinRule(1)],
-      'company.departments.*.teams.*.name': [RequiredRule(), IsStringRule(), MinRule(3), MaxRule(25)],
-      'company.departments.*.teams.*.members': [RequiredRule(), IsListRule()],
-      'company.departments.*.teams.*.members.*.name': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(50)],
-      'company.departments.*.teams.*.members.*.skills': [RequiredRule(), IsListRule(), MinRule(1), MaxRule(10)],
-      'company.departments.*.teams.*.members.*.skills.*': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(20)],
-      'company.departments.*.teams.*.members.*.projects': [NullableRule(), IsListRule()],
-      'company.departments.*.teams.*.members.*.projects.*.name': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(2),
-        MaxRule(30)
-      ],
       'company.departments.*.name': [required(), string(), max(30)],
       'company.departments.*.teams': [required(), list(), min(1)],
       'company.departments.*.teams.*.name': [required(), string(), max(25)],
       'company.departments.*.teams.*.members': [required(), list()],
-      'company.departments.*.teams.*.members.*.name': [required(), string(), min(2), max(50)],
-      'company.departments.*.teams.*.members.*.skills': [required(), list(), min(1), max(10)],
-      'company.departments.*.teams.*.members.*.skills.*': [required(), string(), min(2), max(20)],
+      'company.departments.*.teams.*.members.*.name': [
+        required(),
+        string(),
+        min(2),
+        max(50)
+      ],
+      'company.departments.*.teams.*.members.*.skills': [
+        required(),
+        list(),
+        min(1),
+        max(10)
+      ],
+      'company.departments.*.teams.*.members.*.skills.*': [
+        required(),
+        string(),
+        min(2),
+        max(20)
+      ],
       'company.departments.*.teams.*.members.*.projects': [nullable(), list()],
-      'company.departments.*.teams.*.members.*.projects.*.name': [required(), string(), min(2), max(30)],
+      'company.departments.*.teams.*.members.*.projects.*.name': [
+        required(),
+        string(),
+        min(2),
+        max(30)
+      ],
       'company.departments.*.teams.*.members.*.projects.*.status': [
         required(),
         string(),
@@ -188,23 +192,9 @@ void main(List<String> args) async {
     });
 
     print('✅ Concise Syntax Validation passed!');
-    print('📊 Validated data has ${validatedData.keys.length} top-level fields');
+    print(
+        '📊 Validated data has ${validatedData.keys.length} top-level fields');
     print('📄 Sample field: name = "${validatedData['name']}"');
-
-    // === EXAMPLE 2: VERBOSE SYNTAX (BACKWARD COMPATIBILITY) ===
-    print('\n🔄 Example 2: Using Verbose Syntax (Backward Compatibility)');
-    final validatedData2 = await InputValidate.validate({
-      'name': 'John Doe',
-      'bis': [1, 2, 3, 4, 5],
-    }, {
-      'name': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(80)],
-      'bis': [RequiredRule(), IsListRule()],
-      'bis.*': [RequiredRule(), IsNumberRule()],
-    });
-
-    print('✅ Verbose Syntax Validation passed!');
-    print('📊 Validated data has ${validatedData2.keys.length} top-level fields');
-    print('📄 Sample field: bis = ${validatedData2['bis']}');
   } on ValidationException catch (e) {
     print('❌ Validation failed: ${e.message}');
 
