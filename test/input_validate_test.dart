@@ -111,8 +111,7 @@ void main() {
             }));
       });
 
-      test('should throw MultipleValidationException for validation failures',
-          () async {
+      test('should throw MultipleValidationException for validation failures', () async {
         final rules = {
           'name': [RequiredRule(), IsStringRule()],
           'age': [RequiredRule(), IsNumberRule()],
@@ -151,8 +150,7 @@ void main() {
 
           expect(exception.failureCount, equals(3));
           expect(exception.inputErrors, isNotNull);
-          expect(exception.inputErrors!.keys,
-              containsAll(['name', 'email', 'age']));
+          expect(exception.inputErrors!.keys, containsAll(['name', 'email', 'age']));
         }
       });
 
@@ -173,8 +171,7 @@ void main() {
           final exception = e as MultipleValidationException;
 
           expect(exception.inputErrors!['password'], hasLength(1));
-          expect(exception.inputErrors!['password']!.first,
-              contains('at least 8'));
+          expect(exception.inputErrors!['password']!.first, contains('at least 8'));
         }
       });
 
@@ -196,8 +193,7 @@ void main() {
           final exception = e as MultipleValidationException;
 
           expect(exception.inputErrors!['missing.field'], isNotNull);
-          expect(exception.inputErrors!['missing.field']!.first,
-              contains('required'));
+          expect(exception.inputErrors!['missing.field']!.first, contains('required'));
         }
       });
 
@@ -323,10 +319,8 @@ void main() {
 
           expect(exception.inputErrors!['users.1.name'], isNotNull);
           expect(exception.inputErrors!['users.1.email'], isNotNull);
-          expect(exception.inputErrors!['users.1.name']!.first,
-              contains('required'));
-          expect(exception.inputErrors!['users.1.email']!.first,
-              contains('valid email'));
+          expect(exception.inputErrors!['users.1.name']!.first, contains('required'));
+          expect(exception.inputErrors!['users.1.email']!.first, contains('valid email'));
         }
       });
 
@@ -502,8 +496,7 @@ void main() {
           final exception = e as MultipleValidationException;
 
           expect(exception.inputErrors!['test'], isNotNull);
-          expect(exception.inputErrors!['test']!.first,
-              contains('Validation error'));
+          expect(exception.inputErrors!['test']!.first, contains('Validation error'));
         }
       });
 
@@ -556,8 +549,7 @@ void main() {
           'email': 'john@example.com',
         };
 
-        final result = await InputValidate.validate(input, rules,
-            enableParallelValidation: true);
+        final result = await InputValidate.validate(input, rules, enableParallelValidation: true);
 
         expect(
             result,
@@ -581,8 +573,7 @@ void main() {
           'email': 'john@example.com',
         };
 
-        final result = await InputValidate.validate(input, rules,
-            enableParallelValidation: false);
+        final result = await InputValidate.validate(input, rules, enableParallelValidation: false);
 
         expect(
             result,
@@ -593,8 +584,7 @@ void main() {
             }));
       });
 
-      test('should handle early termination with sequential validation',
-          () async {
+      test('should handle early termination with sequential validation', () async {
         final rules = {
           'name': [RequiredRule(), IsStringRule()],
           'age': [RequiredRule(), IsNumberRule()],
@@ -608,8 +598,7 @@ void main() {
         };
 
         try {
-          await InputValidate.validate(input, rules,
-              enableParallelValidation: false);
+          await InputValidate.validate(input, rules, enableParallelValidation: false);
           fail('Expected validation exception');
         } catch (e) {
           expect(e, isA<MultipleValidationException>());
@@ -619,6 +608,78 @@ void main() {
           expect(exception.inputErrors!['name'], isNotNull);
           expect(exception.inputErrors!['name']!.first, contains('required'));
         }
+      });
+    });
+
+    group('Shorthand Syntax', () {
+      test('should work with concise rule syntax', () async {
+        final input = {
+          'name': 'John Doe',
+          'age': 30,
+          'email': 'john@example.com',
+          'tags': ['user', 'active'],
+          'isAdmin': false,
+        };
+
+        final rules = {
+          'name': [required(), string(), min(2), max(50)],
+          'age': [required(), number(), min(18), max(120)],
+          'email': [required(), string(), email()],
+          'tags': [required(), list(), min(1)],
+          'isAdmin': [required(), boolean()],
+        };
+
+        final validated = await InputValidate.validate(input, rules);
+
+        expect(validated['name'], equals('John Doe'));
+        expect(validated['age'], equals(30));
+        expect(validated['email'], equals('john@example.com'));
+        expect(validated['tags'], equals(['user', 'active']));
+        expect(validated['isAdmin'], equals(false));
+      });
+
+      test('should work with mixed syntax (concise + verbose)', () async {
+        final input = {
+          'name': 'Alice',
+          'score': 85,
+          'status': 'active',
+        };
+
+        final rules = {
+          'name': [required(), IsStringRule()], // Mixed: concise + verbose
+          'score': [RequiredRule(), number(), min(0)], // Mixed: verbose + concise
+          'status': [
+            required(),
+            string(),
+            InRule({'active', 'inactive'})
+          ], // Mixed
+        };
+
+        final validated = await InputValidate.validate(input, rules);
+
+        expect(validated['name'], equals('Alice'));
+        expect(validated['score'], equals(85));
+        expect(validated['status'], equals('active'));
+      });
+
+      test('should handle nullable fields with concise syntax', () async {
+        final input = {
+          'name': 'Bob',
+          'bio': null,
+          'age': 25,
+        };
+
+        final rules = {
+          'name': [required(), string()],
+          'bio': [nullable(), string(), max(500)],
+          'age': [required(), number()],
+        };
+
+        final validated = await InputValidate.validate(input, rules);
+
+        expect(validated['name'], equals('Bob'));
+        expect(validated['bio'], isNull);
+        expect(validated['age'], equals(25));
       });
     });
   });

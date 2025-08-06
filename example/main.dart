@@ -112,124 +112,100 @@ void main(List<String> args) async {
   };
 
   try {
+    // === EXAMPLE 1: CONCISE SYNTAX (NEW APPROACH) ===
+    print('\n🚀 Example 1: Using Concise Syntax');
     final validatedData = await InputValidate.validate(data, {
       // === BASIC SCALAR VALIDATION ===
-      'name': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(80)],
-      'age': [RequiredRule(), IsNumberRule(), MinRule(18), MaxRule(119)],
-      'active': [RequiredRule(), IsBooleanRule()],
-      'score': [NullableRule(), IsStringRule()],
+      'name': [required(), string(), min(2), max(80)],
+      'age': [required(), number(), min(18), max(119)],
+      'active': [required(), boolean()],
+      'score': [nullable(), string()],
 
       // === NESTED OBJECT VALIDATION ===
-      'profile.first': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(1),
-        MaxRule(50)
-      ],
-      'profile.last': [RequiredRule(), IsStringRule(), MinRule(1), MaxRule(50)],
+      'profile.first': [required(), string(), min(1), max(50)],
+      'profile.last': [required(), string(), min(1), max(50)],
       'profile.settings.theme': [
-        RequiredRule(),
-        IsStringRule(),
-        InRule({'dark', 'light', 'auto'})
+        required(),
+        string(),
+        inSet({'dark', 'light', 'auto'})
       ],
-      'profile.settings.notifications': [RequiredRule(), IsBooleanRule()],
+      'profile.settings.notifications': [required(), boolean()],
 
       // === ARRAY WITH OBJECTS VALIDATION ===
-      'users': [RequiredRule(), IsListRule(), MinRule(1), MaxRule(10)],
+      'users': [required(), list(), min(1), max(10)],
       'users.*.id': [RequiredRule(), IsNumberRule(), MinRule(1)],
-      'users.*.name': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(50)],
-      'users.*.contacts': [NullableRule(), IsListRule(), MaxRule(3)],
+      'users.*.name': [required(), string(), min(2), max(50)],
+      'users.*.contacts': [nullable(), list(), max(3)],
       'users.*.contacts.*.type': [
-        RequiredRule(),
-        IsStringRule(),
-        InRule({'phone', 'email', 'address'})
+        required(),
+        string(),
+        inSet({'phone', 'email', 'address'})
       ],
-      'users.*.contacts.*.value': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(5),
-        MaxRule(100)
-      ],
-      'users.*.tags': [RequiredRule(), IsListRule(), MinRule(1), MaxRule(5)],
-      'users.*.tags.*': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(2),
-        MaxRule(20)
-      ],
+      'users.*.contacts.*.value': [required(), string(), min(5), max(100)],
+      'users.*.tags': [required(), list(), min(1), max(5)],
+      'users.*.tags.*': [required(), string(), min(2), max(20)],
 
       // === COMPLEX NESTED STRUCTURE VALIDATION ===
-      'company.departments': [
-        RequiredRule(),
-        IsListRule(),
-        MinRule(1),
-        MaxRule(5)
-      ],
-      'company.departments.*.name': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(3),
-        MaxRule(30)
-      ],
+      'company.departments': [required(), list(), min(1), max(5)],
+      'company.departments.*.name': [RequiredRule(), IsStringRule(), MinRule(3), MaxRule(30)],
       'company.departments.*.teams': [RequiredRule(), IsListRule(), MinRule(1)],
-      'company.departments.*.teams.*.name': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(3),
-        MaxRule(25)
-      ],
+      'company.departments.*.teams.*.name': [RequiredRule(), IsStringRule(), MinRule(3), MaxRule(25)],
       'company.departments.*.teams.*.members': [RequiredRule(), IsListRule()],
-      'company.departments.*.teams.*.members.*.name': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(2),
-        MaxRule(50)
-      ],
-      'company.departments.*.teams.*.members.*.skills': [
-        RequiredRule(),
-        IsListRule(),
-        MinRule(1),
-        MaxRule(10)
-      ],
-      'company.departments.*.teams.*.members.*.skills.*': [
-        RequiredRule(),
-        IsStringRule(),
-        MinRule(2),
-        MaxRule(20)
-      ],
-      'company.departments.*.teams.*.members.*.projects': [
-        NullableRule(),
-        IsListRule()
-      ],
+      'company.departments.*.teams.*.members.*.name': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(50)],
+      'company.departments.*.teams.*.members.*.skills': [RequiredRule(), IsListRule(), MinRule(1), MaxRule(10)],
+      'company.departments.*.teams.*.members.*.skills.*': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(20)],
+      'company.departments.*.teams.*.members.*.projects': [NullableRule(), IsListRule()],
       'company.departments.*.teams.*.members.*.projects.*.name': [
         RequiredRule(),
         IsStringRule(),
         MinRule(2),
         MaxRule(30)
       ],
+      'company.departments.*.name': [required(), string(), max(30)],
+      'company.departments.*.teams': [required(), list(), min(1)],
+      'company.departments.*.teams.*.name': [required(), string(), max(25)],
+      'company.departments.*.teams.*.members': [required(), list()],
+      'company.departments.*.teams.*.members.*.name': [required(), string(), min(2), max(50)],
+      'company.departments.*.teams.*.members.*.skills': [required(), list(), min(1), max(10)],
+      'company.departments.*.teams.*.members.*.skills.*': [required(), string(), min(2), max(20)],
+      'company.departments.*.teams.*.members.*.projects': [nullable(), list()],
+      'company.departments.*.teams.*.members.*.projects.*.name': [required(), string(), min(2), max(30)],
       'company.departments.*.teams.*.members.*.projects.*.status': [
-        RequiredRule(),
-        IsStringRule(),
-        InRule({'planning', 'active', 'completed', 'cancelled'})
+        required(),
+        string(),
+        inSet({'planning', 'active', 'completed', 'cancelled'})
       ],
 
       // === TEST SECTION VALIDATION ===
-      'test.nested.array': [RequiredRule(), IsListRule()],
-      'test.nested.array.*.key': [RequiredRule(), IsStringRule(), MinRule(3)],
-      'test.nested.object.innerKey': [RequiredRule(), IsStringRule()],
-      'test.emptyArray': [IsListRule(), MinRule(0), MaxRule(5)],
+      'test.nested.array': [required(), list()],
+      'test.nested.array.*.key': [required(), string(), min(3)],
+      'test.nested.object.innerKey': [required(), string()],
+      'test.emptyArray': [list(), min(0), max(5)],
 
       // === ADDITIONAL EDGE CASE VALIDATIONS ===
-      // Optional fields that might not exist
-      'optionalField': [NullableRule(), IsStringRule()],
-      'profile.optional': [NullableRule(), IsNumberRule(), MaxRule(1000)],
+      'optionalField': [nullable(), string()],
+      'profile.optional': [nullable(), number(), max(1000)],
     });
 
-    print('✅ All validation passed - data is completely valid!');
-    print('📦 Validated data contains ${validatedData.keys.length} fields');
-    print(validatedData);
+    print('✅ Concise Syntax Validation passed!');
+    print('📊 Validated data has ${validatedData.keys.length} top-level fields');
+    print('📄 Sample field: name = "${validatedData['name']}"');
+
+    // === EXAMPLE 2: VERBOSE SYNTAX (BACKWARD COMPATIBILITY) ===
+    print('\n🔄 Example 2: Using Verbose Syntax (Backward Compatibility)');
+    final validatedData2 = await InputValidate.validate({
+      'name': 'John Doe',
+      'bis': [1, 2, 3, 4, 5],
+    }, {
+      'name': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(80)],
+      'bis': [RequiredRule(), IsListRule()],
+      'bis.*': [RequiredRule(), IsNumberRule()],
+    });
+
+    print('✅ Verbose Syntax Validation passed!');
+    print('📊 Validated data has ${validatedData2.keys.length} top-level fields');
+    print('📄 Sample field: bis = ${validatedData2['bis']}');
   } on ValidationException catch (e) {
-    print(e.inputErrors);
     print('❌ Validation failed: ${e.message}');
 
     if (e.inputErrors == null) {

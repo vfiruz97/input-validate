@@ -15,3 +15,5 @@ export 'src/rules/special_rules.dart';
 export 'src/rules/type_rules.dart';
 // Validation rules
 export 'src/rules/validation_rule.dart';
+// Shorthand rule functions for concise syntax
+export 'src/shortcuts.dart';

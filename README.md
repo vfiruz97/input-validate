@@ -30,12 +30,22 @@ dart pub get
 
 ## Quick Start
 
+## Quick Start
+
 ### Basic Validation
 
 ```dart
 import 'package:input_validate/input_validate.dart';
 
+// ✨ NEW: Concise syntax (recommended)
 final rules = {
+  'name':   [required(), string()],
+  'age':    [required(), number(), min(18)],
+  'email':  [required(), email()],
+};
+
+// 🔄 Or use verbose syntax (backward compatible)
+final verboseRules = {
   'name':   [RequiredRule(), IsStringRule()],
   'age':    [RequiredRule(), IsNumberRule(), MinRule(18)],
   'email':  [RequiredRule(), EmailRule()],
@@ -63,10 +73,11 @@ try {
 ### Nested Object Validation
 
 ```dart
+// Concise syntax
 final rules = {
-  'user.name': [RequiredRule(), IsStringRule()],
-  'user.profile.age': [RequiredRule(), IsNumberRule(), MinRule(18)],
-  'settings.theme': [RequiredRule(), InRule({'light', 'dark'})],
+  'user.name': [required(), string()],
+  'user.profile.age': [required(), number(), min(18)],
+  'settings.theme': [required(), inSet({'light', 'dark'})],
 };
 
 final input = {
@@ -84,10 +95,11 @@ final validated = await InputValidate.validate(input, rules);
 ### Array Validation with Wildcards
 
 ```dart
+// Concise syntax for array validation
 final rules = {
-  'users.*.name': [RequiredRule(), IsStringRule()],
-  'users.*.email': [RequiredRule(), EmailRule()],
-  'users.*.roles': [RequiredRule(), IsListRule()],
+  'users.*.name': [required(), string()],
+  'users.*.email': [required(), email()],
+  'users.*.roles': [required(), list()],
 };
 
 final input = {
@@ -122,30 +134,79 @@ final rules = {
 // Validates deeply nested arrays and objects
 ```
 
+## Validation Syntax Options
+
+InputValidate offers two syntax styles for defining validation rules:
+
+### 🌟 Concise Syntax (Recommended)
+
+The new concise syntax provides cleaner, more readable validation rules:
+
+```dart
+final rules = {
+  'name': [required(), string(), min(2), max(50)],
+  'age': [required(), number(), min(18), max(120)],
+  'email': [required(), string(), email()],
+  'status': [required(), string(), inSet({'active', 'inactive'})],
+  'tags': [required(), list(), min(1), max(5)],
+  'profile.bio': [nullable(), string(), max(500)],
+};
+```
+
+**Available shorthand functions:**
+
+- **Type validation:** `required()`, `string()`, `number()`, `boolean()`, `list()`, `map()`, `email()`, `nullable()`
+- **Constraints:** `min(value)`, `max(value)`, `inSet(values)`
+- **Aliases:** `isString()`, `isNumber()`, `isBoolean()`, `isList()`, `isMap()`, `allowedValues(values)`
+
+### 🔄 Verbose Syntax (Backward Compatible)
+
+The original class-based syntax remains fully supported:
+
+```dart
+final rules = {
+  'name': [RequiredRule(), IsStringRule(), MinRule(2), MaxRule(50)],
+  'age': [RequiredRule(), IsNumberRule(), MinRule(18), MaxRule(120)],
+  'email': [RequiredRule(), IsStringRule(), EmailRule()],
+  'status': [RequiredRule(), IsStringRule(), InRule({'active', 'inactive'})],
+  'tags': [RequiredRule(), IsListRule(), MinRule(1), MaxRule(5)],
+  'profile.bio': [NullableRule(), IsStringRule(), MaxRule(500)],
+};
+```
+
+**Mixing both syntaxes is supported:**
+
+```dart
+final rules = {
+  'name': [required(), IsStringRule()], // Mixed syntax works fine
+  'age': [RequiredRule(), number(), min(18)], // Any combination
+};
+```
+
 ## Available Validation Rules
 
 ### Type Rules
 
-- `RequiredRule()` - Field must be present and not null/empty
-- `IsStringRule()` - Value must be a string
-- `IsNumberRule()` - Value must be a number (int or double)
-- `IsBooleanRule()` - Value must be a boolean
-- `IsListRule()` - Value must be a list
-- `IsMapRule()` - Value must be a map
+- `RequiredRule()` / `required()` - Field must be present and not null/empty
+- `IsStringRule()` / `string()` - Value must be a string
+- `IsNumberRule()` / `number()` - Value must be a number (int or double)
+- `IsBooleanRule()` / `boolean()` - Value must be a boolean
+- `IsListRule()` / `list()` - Value must be a list
+- `IsMapRule()` / `map()` - Value must be a map
 
 ### Constraint Rules
 
-- `MinRule(value)` - Minimum value for numbers or minimum length for strings/lists
-- `MaxRule(value)` - Maximum value for numbers or maximum length for strings/lists
-- `InRule(allowedValues)` - Value must be in the allowed set
+- `MinRule(value)` / `min(value)` - Minimum value for numbers or minimum length for strings/lists
+- `MaxRule(value)` / `max(value)` - Maximum value for numbers or maximum length for strings/lists
+- `InRule(allowedValues)` / `inSet(allowedValues)` - Value must be in the allowed set
 
 ### Format Rules
 
-- `EmailRule()` - Value must be a valid email address
+- `EmailRule()` / `email()` - Value must be a valid email address
 
 ### Special Rules
 
-- `NullableRule()` - Allows null values and skips other validation rules when value is null
+- `NullableRule()` / `nullable()` - Allows null values and skips other validation rules when value is null
 
 ### Working with Nullable Fields
 
