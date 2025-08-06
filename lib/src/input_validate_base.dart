@@ -328,8 +328,18 @@ class InputValidate {
     // Process array paths to ensure empty arrays are included
     for (final arrayPath in arrayPaths) {
       final arrayValue = _getValueAtPath(input, arrayPath);
-      if (arrayValue is List && arrayValue.isEmpty) {
-        _setValueAtPath(result, arrayPath, []);
+
+      if (arrayValue is List) {
+        if (arrayValue.isEmpty) {
+          _setValueAtPath(result, arrayPath, []);
+        } else {
+          final hasChildrenValidation =
+              validatedPaths.any((path) => path.startsWith('$arrayPath.'));
+          // If there are no child validations for this array, include the array as is
+          if (!hasChildrenValidation) {
+            _setValueAtPath(result, arrayPath, arrayValue);
+          }
+        }
       }
     }
 

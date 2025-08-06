@@ -1,6 +1,6 @@
 name: input_validate
 description: A pure Dart package for validating nested map data structures with wildcard support.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/vfiruz97/input-validate
 repository: https://github.com/vfiruz97/input-validate
 issue_tracker: https://github.com/vfiruz97/input-validate/issues
