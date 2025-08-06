@@ -495,6 +495,6 @@ class InputValidate {
   }
 
   static void devLog(String message) {
-    dev.log(message);
+    dev.log(message, name: 'InputValidate', level: 800);
   }
 }
